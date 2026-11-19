@@ -1,22 +1,10 @@
 import { useEffect, useState } from 'react'
 import { lofi, type Mood } from './lofi'
 
-const KEY = 'portfolio-sound'
-const read = () => { try { return localStorage.getItem(KEY) === 'on' } catch { return false } }
-const write = (v: boolean) => { try { localStorage.setItem(KEY, v ? 'on' : 'off') } catch { /* private window */ } }
 
-/** Off until asked. If it was on last visit it starts at the first click or key press (browsers block sound before that). */
+/** Always off on arrival. It only plays after the visitor presses the button, and never remembers that across visits. */
 export default function SoundToggle({ mood, quiet }: { mood: Mood; quiet?: boolean }) {
   const [on, setOn] = useState(false)
-
-  useEffect(() => {
-    if (!read()) return
-    const go = () => { setOn(true); lofi.setMood(mood); lofi.start() }
-    window.addEventListener('pointerdown', go, { once: true })
-    window.addEventListener('keydown', go, { once: true })
-    return () => { window.removeEventListener('pointerdown', go); window.removeEventListener('keydown', go) }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => { lofi.setMood(mood) }, [mood])
   useEffect(() => { lofi.duck(!!quiet) }, [quiet, on])
@@ -29,7 +17,6 @@ export default function SoundToggle({ mood, quiet }: { mood: Mood; quiet?: boole
   const toggle = () => {
     const next = !on
     setOn(next)
-    write(next)
     if (next) { lofi.setMood(mood); lofi.start() } else lofi.stop()
   }
 
