@@ -6,6 +6,7 @@ import ProjectWindow from './ProjectWindow'
 import SiteView from './SiteView'
 import ResumeWindow from './ResumeWindow'
 import CustomCursor from './CustomCursor'
+import SoundToggle from './SoundToggle'
 
 const Room = lazy(() => import('./Room'))
 
@@ -63,6 +64,7 @@ function Landing() {
       <div className="stage">
         <SiteView reduced={red} noRoom />
         <CustomCursor />
+        <SoundToggle mood="site" quiet={valid === 'vibeflow'} />
         <AnimatePresence>{resume && <ResumeWindow key="resume" reduced={red} />}</AnimatePresence>
         <AnimatePresence>{valid && <ProjectWindow key="win" slug={valid} base="site" reduced={red} />}</AnimatePresence>
       </div>
@@ -93,6 +95,7 @@ function Landing() {
         {site && mode && <SiteView key="site" reduced={reduced} />}
       </AnimatePresence>
       {site && mode && <CustomCursor />}
+      {mode && <SoundToggle mood={site ? 'site' : 'room'} quiet={valid === 'vibeflow'} />}
       <AnimatePresence>
         {resume && mode && <ResumeWindow key="resume" reduced={reduced} />}
       </AnimatePresence>
