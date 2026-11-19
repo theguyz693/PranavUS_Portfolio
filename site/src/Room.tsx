@@ -461,7 +461,7 @@ function drawDesktop(g: CanvasRenderingContext2D, W: number, H: number, hot: boo
   g.fillText('Pranav   File   Edit   View   Window', W * 0.02, H * 0.039)
   g.textAlign = 'right'
   const t = istNow()
-  g.fillText(`${String(t.h).padStart(2, '0')}:${String(t.m).padStart(2, '0')}`, W * 0.98, H * 0.039)
+  g.fillText(`${((t.h + 11) % 12) + 1}:${String(t.m).padStart(2, '0')} ${t.h >= 12 ? 'PM' : 'AM'}`, W * 0.98, H * 0.039)
 
   // the portfolio window
   const wx = W * 0.16, wy = H * 0.15, ww = W * 0.68, wh = H * 0.6
@@ -504,6 +504,8 @@ function Monitor({ active, position }: { active: boolean; position: [number, num
   const nav = useNavigate()
   const invalidate = useThree((s) => s.invalidate)
   const [hot, setHot] = useState(false)
+  const [minute, setMinute] = useState(0)
+  useEffect(() => { const id = window.setInterval(() => setMinute((n) => n + 1), 15000); return () => clearInterval(id) }, []) // keeps the menu-bar clock current
 
   // the screen is a canvas showing a little desktop; hovering it highlights the portfolio window and offers to open it
   const { canvas, tex } = useMemo(() => {
@@ -518,7 +520,7 @@ function Monitor({ active, position }: { active: boolean; position: [number, num
     drawDesktop(canvas.getContext('2d')!, canvas.width, canvas.height, hot, active)
     tex.needsUpdate = true
     invalidate()
-  }, [hot, active, canvas, tex, invalidate])
+  }, [hot, active, minute, canvas, tex, invalidate])
 
   return (
     <Fitted url={M.monitor} target={{ w: 1.5 }} position={position}>

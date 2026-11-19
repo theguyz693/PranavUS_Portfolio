@@ -13,3 +13,4 @@ contents/projects/political-bias-detection/*.ipynb
 contents/projects/political-bias-detection/*.docx
 contents/projects/political-bias-detection/*.pptx
 .claude/
+exports/
