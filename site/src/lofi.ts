@@ -43,6 +43,7 @@ export class Lofi {
   private mood: Mood = 'room'
   private target = 0.0
   private on = false
+  private began = false
 
   private build() {
     const ctx = new AudioContext()
@@ -193,6 +194,7 @@ export class Lofi {
     const ctx = this.ctx!
     if (ctx.state === 'suspended') await ctx.resume()
     this.on = true
+    this.began = true
     this.target = volume
     this.next = Math.max(this.next, ctx.currentTime + 0.1)
     clearInterval(this.timer)
@@ -218,6 +220,7 @@ export class Lofi {
   }
 
   get playing() { return this.on }
+  get everStarted() { return this.began }
 }
 
 export const lofi = new Lofi()
