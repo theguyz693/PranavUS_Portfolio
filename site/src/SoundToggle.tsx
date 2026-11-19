@@ -13,12 +13,19 @@ const remember = (off: boolean) => { try { if (off) localStorage.setItem(KEY, 'o
 export default function SoundToggle({ mood, quiet }: { mood: Mood; quiet?: boolean }) {
   const [on, setOn] = useState(() => !muted())
 
+  // keep trying on every kind of first interaction until the browser really lets the sound run
   useEffect(() => {
     if (!on) return
-    const go = () => { lofi.setMood(mood); lofi.start() }
-    const ev = ['pointerdown', 'keydown', 'touchend'] as const
-    ev.forEach((e) => window.addEventListener(e, go, { once: true }))
-    return () => ev.forEach((e) => window.removeEventListener(e, go))
+    const ev = ['pointerdown', 'pointerup', 'mousedown', 'click', 'keydown', 'touchend'] as const
+    const off = () => ev.forEach((e) => window.removeEventListener(e, go, true))
+    async function go() {
+      if (muted()) return off()
+      lofi.setMood(mood)
+      await lofi.start()
+      if (lofi.running) off()
+    }
+    ev.forEach((e) => window.addEventListener(e, go, true))
+    return off
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

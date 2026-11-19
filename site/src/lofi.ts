@@ -220,7 +220,10 @@ export class Lofi {
   }
 
   get playing() { return this.on }
+  /** True once the browser has actually let the audio run. */
+  get running() { return this.on && this.ctx?.state === 'running' }
   get everStarted() { return this.began }
 }
 
 export const lofi = new Lofi()
+if (import.meta.env.DEV) (window as unknown as { __lofi: Lofi }).__lofi = lofi
