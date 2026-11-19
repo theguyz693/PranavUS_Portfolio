@@ -1,0 +1,60 @@
+{
+  "slug": "collectorhub",
+  "name": "CollectorHub",
+  "pitch": "A Hot Wheels collector's garage: scan a car, catalogue it, browse it in 3D.",
+  "description": "A web app for cataloguing a personal Hot Wheels collection. It reads a car's barcode and printed text from a photo, matches it against a built-in catalogue of 4,041 real mainline releases, and asks you to confirm before adding it. The collection can be browsed as a lit display shelf, a one-car-at-a-time 3D showcase, or a grid.",
+  "stack": [
+    "React 19",
+    "TypeScript",
+    "Vite 6",
+    "React Router 7",
+    "Tailwind CSS 4",
+    "Framer Motion",
+    "three.js",
+    "Tesseract.js",
+    "ZXing (@zxing/browser)",
+    "Supabase (Postgres + row-level security; not yet connected)",
+    "Node.js (MediaWiki API import script)",
+    "Vitest",
+    "pnpm + Turborepo"
+  ],
+  "status": "in progress",
+  "statusNote": "Working prototype in local demo mode; Supabase backend not connected; OCR scanning needs improvement.",
+  "links": {
+    "repo": "https://github.com/theguyz693/HW_db",
+    "live": null,
+    "liveNote": "TODO: deploy (e.g. Vercel/Netlify) and add the URL",
+    "video": "TODO: link to an uploaded demo video, if any"
+  },
+  "glimpseType": "small interactive demo",
+  "glimpseMedia": {
+    "hero": "media/hero.png",
+    "loop": "media/demo-loop.webm",
+    "loopFallback": "media/demo-loop.mp4",
+    "poster": "media/poster.jpg"
+  },
+  "hardestProblem": "Making thousands of inconsistent wiki product photos look like one consistent collectible: real card photo lookup by toy code, in-browser pixel analysis (cutout detection and flood-fill backdrop removal with a quality check), and explicit per-car overrides, all rendered in one shared package frame.",
+  "results": [
+    "4,041 Hot Wheels mainline releases (2018-2026) imported into a 471 KB JSON catalogue (about 132 KB gzipped)",
+    "21 unit tests passing across 4 files",
+    "Matcher ranks the full catalogue within a 300 ms test budget",
+    "Informal check: real card photo found for 17 of 18 hand-picked 2023-2025 releases",
+    "Main JS bundle reduced from 2.84 MB to 2.42 MB by replacing a charting library with CSS charts",
+    "TODO: photo-scan identification accuracy on real uploads",
+    "TODO: usage numbers once deployed"
+  ],
+  "highlights": [
+    "Built a Hot Wheels collection web app in React 19, TypeScript and Vite with three garage views (CSS display shelf, three.js 3D showcase, filterable grid) driven by one shared filter set.",
+    "Wrote a Node import script against the MediaWiki API that turned the Hot Wheels Wiki's yearly release tables into a 4,041-release catalogue (471 KB JSON, about 132 KB gzipped), covered by parser tests.",
+    "Implemented in-browser car identification: ZXing barcode decoding plus Tesseract.js OCR feeding a weighted matcher with OCR digit repair and barcode checksum validation, which explains each match and ranks the full catalogue within a 300 ms test budget.",
+    "Standardised inconsistent product photos with a real card photo lookup by toy code, plus in-browser pixel analysis (cutout detection, flood-fill backdrop removal with a quality check) and per-item overrides.",
+    "Built a three.js card-carousel showcase that reuses one renderer and two model slots, slides cars in 460 ms, queues rapid input and respects reduced motion.",
+    "Hardened Supabase row-level security so users can only write items into collections they own, and covered core logic with 21 Vitest unit tests."
+  ],
+  "credits": [
+    "Catalogue data: Hot Wheels Wiki contributors (CC BY-SA)",
+    "3D package model: \"HOT WHEELS PACKAGE SMALL\" by manish.konda99 (Sketchfab Standard licence)",
+    "Showcase background photo: Chelsey Marques on Unsplash",
+    "Hot Wheels is a trademark of Mattel, Inc.; not affiliated"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "slug": "vibeflow",
+  "name": "VibeFlow",
+  "pitch": "Fullscreen 3D lyric and album-art visuals that react to your Spotify playback.",
+  "summary": "VibeFlow is a visual companion for Spotify, not a music player. It signs in to Spotify, reads the current track, and turns it into fullscreen visuals: animated scenes, a 3D iPod-style player, and four synced-lyric visuals built around a spinning record. It runs as an Electron desktop app and as a Vercel-hosted web build.",
+  "stack": [
+    "React 19",
+    "TypeScript",
+    "Vite",
+    "electron-vite / Electron",
+    "three.js",
+    "react-three-fiber",
+    "drei",
+    "postprocessing",
+    "opentype.js",
+    "Spotify Web API (OAuth PKCE)",
+    "LRCLIB",
+    "Vercel"
+  ],
+  "status": "in progress",
+  "links": {
+    "repo": "https://github.com/theguyz693/vibeflow",
+    "repoNote": "TODO: confirm the repo is public before linking",
+    "live": "https://vibeflow-ivory.vercel.app"
+  },
+  "glimpseType": "interactive-demo",
+  "hardestProblem": "Making synced lyrics read clearly and stay in time in 3D: interpolating track position between 3-second polls, fading any screen that blocks the camera's view, and building see-through glass lettering from font outlines.",
+  "outcome": [
+    "Deployed on Vercel from the GitHub repo.",
+    "Four lyric visuals, a 3D iPod player and the Spotify Companion in one app.",
+    "TODO: real outcome numbers (users, visits, performance measurements); none exist in the repo.",
+    "TODO: confirm whether visitors can sign in with Spotify on the live domain."
+  ],
+  "highlights": [
+    "Built VibeFlow, a Spotify visual companion in React 19, TypeScript and three.js (react-three-fiber) that turns the current track into fullscreen 3D visuals, shipped as an Electron desktop app and a Vercel-hosted web build.",
+    "Implemented Spotify OAuth PKCE sign-in with token refresh and 3-second playback polling in a backend-free client app.",
+    "Added time-synced lyrics (LRCLIB) with progress interpolated between polls, driving four lyric visuals (Editorial, Reel 3D, Disc Reel, Floating Screens) from one shared lyric timeline.",
+    "Wrote a repeated-line chorus detector that drives glow and disc speed, so visuals have a calm baseline and a clear peak. (TODO: accuracy not measured.)",
+    "Built 3D glass lettering from font outlines (opentype.js to extruded, bevelled, smooth-shaded geometry) with a transmission and dispersion material, used in two visuals.",
+    "Built a 3D iPod-style player: the screen plane is sized from the model's front-face geometry, and a canvas texture shows now-playing and synced lyrics with click-wheel controls."
+  ],
+  "media": {
+    "folder": "media",
+    "hero": "media/hero.png",
+    "loop": "media/demo-loop.webm"
+  }
+}

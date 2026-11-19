@@ -1,0 +1,26 @@
+{
+  "name": "Light Reaction",
+  "slug": "light-reaction",
+  "pitch": "Makes a Bluetooth RGB light glow in the colour of your screen.",
+  "stack": ["Python", "asyncio", "aiohttp", "bleak", "mss", "Pillow", "JavaScript", "HTML", "CSS"],
+  "status": "in progress",
+  "links": {
+    "repo": "https://github.com/theguyz693/light-reaction",
+    "live": null
+  },
+  "glimpseType": "interactive-demo",
+  "hardestProblem": "TODO: confirm. Code evidence: working out the light's vendor-specific BLE command protocol by testing (power-off sequence with fallbacks, RGB-restore for power-on).",
+  "result": "Screen colour sync to the physical light works. No performance metrics recorded. TODO: add if measured.",
+  "highlights": [
+    "Built a screen-reactive 'Ambilight' for a Bluetooth LE RGB light in Python, capturing the display with mss/Pillow and streaming averaged colour over BLE with bleak.",
+    "Designed a single-process asyncio backend (aiohttp REST + WebSocket) that coordinates BLE I/O, screen capture and live UI updates on one event loop.",
+    "Built a local browser dashboard (vanilla JS) with BLE device scanning, mode switching (sync / manual / off), monitor selection, brightness, presets and live colour preview.",
+    "Added adjustable sync rate (3-15 FPS) and a colour-change threshold to limit BLE writes.",
+    "Worked out the light's vendor-specific 9-byte command protocol by testing, including a power-off sequence with fallbacks, and wrote a CLI tester and GATT inspection endpoint to support it.",
+    "Supports multi-monitor setups by enumerating displays with mss and letting the user choose the capture source."
+  ],
+  "media": {
+    "hero": "media/hero.png",
+    "demo": "media/demo-loop.webm"
+  }
+}

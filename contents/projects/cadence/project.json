@@ -1,0 +1,48 @@
+{
+  "slug": "cadence",
+  "name": "Cadence",
+  "pitch": "Productivity web app for routines on 1–20 day cycles, plus tasks, goals and focus.",
+  "summary": "Cadence is a full-stack web app for keeping habits that are not daily. A routine repeats on a cycle you design, and the Today screen always shows what to do next. It also has tasks, goals with steps, a calendar that imports Google/Outlook/Apple calendars, a Lock In focus timer, and a no-signup demo that runs in the browser.",
+  "stack": [
+    "React 19",
+    "Vite 8",
+    "React Router 7",
+    "CSS design tokens",
+    "Node.js",
+    "Express 5",
+    "JWT",
+    "bcrypt",
+    "MongoDB",
+    "Mongoose 9",
+    "node-ical",
+    "Vercel (serverless)",
+    "node:test",
+    "Playwright-core",
+    "ffmpeg"
+  ],
+  "status": "in progress",
+  "links": {
+    "repo": "https://github.com/theguyz693/cadence",
+    "repoNote": "TODO: confirm the repo is public before linking",
+    "live": "https://cadence-delta-five.vercel.app"
+  },
+  "glimpseType": "interactive-demo",
+  "hardestProblem": "Nine complete visual themes on one component tree, done with a semantic CSS token layer, planned selector specificity, a variable-driven focus timer and fonts loaded on demand.",
+  "outcome": [
+    "Deployed and running at the live link.",
+    "TODO: usage numbers (users, sessions), if any exist."
+  ],
+  "highlights": [
+    "Built a full-stack productivity app (React 19, Express 5, MongoDB) with routines on 1–20 day cycles, tasks, goals, a calendar and a focus timer, deployed to Vercel with the API as a serverless function.",
+    "Designed a theme system of nine complete visual themes on one component tree using CSS design tokens and planned selector specificity, with live switching and fonts loaded on demand.",
+    "Implemented two-way calendar integration: importing Google/Outlook/Apple calendars from iCal links (node-ical) and publishing a private iCal feed calendar apps can subscribe to.",
+    "Wrote a rule-based natural-language quick-add parser (\"gym 7am mon wed fri\" → a routine on Mon/Wed/Fri at 7:00), covered by unit tests with Node's built-in test runner.",
+    "Built a no-signup demo mode by routing the API client to an in-browser mock backend, so the full app runs on sample data with nothing sent to a server.",
+    "Automated a 1080p product demo video with Playwright-core (CDP screencast) and ffmpeg, scripted end to end."
+  ],
+  "media": {
+    "folder": "media",
+    "hero": "media/hero.png",
+    "loop": "media/demo-loop.webm"
+  }
+}

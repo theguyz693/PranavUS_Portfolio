@@ -1,0 +1,36 @@
+{
+  "slug": "evacuation-planner",
+  "name": "Crowd-Aware Evacuation Planner",
+  "pitch": "Plans building evacuations that account for crowds, fire and smoke, tested on simulation.",
+  "summary": "A capstone research project (Team 212) that decides which exit each person should use in a fire. It books capacity on corridors, doors and stairs ahead of time, uses a hybrid ML model for crossing times, and is tested on a seeded simulator calibrated on real crowd data, with a campus and a hospital building.",
+  "stack": ["Python", "NetworkX", "NumPy", "pandas", "SciPy", "scikit-learn", "LightGBM", "FastAPI", "Uvicorn", "Matplotlib", "HTML/JS dashboards"],
+  "status": "in progress",
+  "statusNote": "TODO: change to finished if the capstone is closed",
+  "links": {
+    "repo": "https://github.com/theguyz693/capstoneML-dev",
+    "repoNote": "TODO: confirm the repo is public before linking",
+    "live": "TODO: none known"
+  },
+  "glimpseType": "interactive-demo",
+  "hardestProblem": "TODO: confirm. Best-documented candidate: making the ML delay model trustworthy on real people. Pure ML scored 7.16 s error on real crowd data; calibrating the simulator and learning only a correction to a physics formula brought it to 2.12 s.",
+  "outcome": [
+    "Look-ahead planning beat shortest-safe-path significantly in 8 of 10 campus scenarios; up to about 36% faster last-out (200 people on floor 3: 367 s to 234 s).",
+    "ML crossing-time error 4.76 s to 2.41 s on 784,014 held-out simulated crossings; 2.12 s on 1,813 real crossings (hybrid model).",
+    "Transferred to a 124-node hospital building: faster walking-crowd exit in 6 of 6 scenarios.",
+    "Gain came from coordination, not prediction accuracy.",
+    "TODO: publication status, grade or award, if any."
+  ],
+  "highlights": [
+    "Built a seeded evacuation simulator and five routing methods in Python (NetworkX, NumPy); a look-ahead capacity-booking planner cut last-out time up to 36% vs shortest-safe-path, significant in 8 of 10 campus scenarios over 2,766 runs.",
+    "Trained a hybrid LightGBM model (physics formula x learned correction) on 784,014 simulated crossings; halved held-out error (4.76 s to 2.41 s) and reached 2.12 s error on real crowd data where pure ML scored 7.16 s.",
+    "Calibrated the simulator on real Juelich crowd measurements, raising door flow from 32%-38% to 98%-122% of lab values, and checked stair speed against NIST drill data.",
+    "Showed the method transfers to a second building (100-bed hospital graph, 124 nodes): faster walking-crowd evacuation in 6 of 6 scenarios; identified the ramp as the single point of failure (42 people stranded if blocked in a fire).",
+    "Optimised the planner with A* and cached edge costs (median 5.3x faster); it re-plans 2,000 people on a 452-node campus in 1.06 s.",
+    "Shipped FastAPI endpoints, a 3D dashboard and a research dashboard, with one-command reproduction and 13 test files. TODO: confirm which parts you personally built."
+  ],
+  "media": {
+    "folder": "media",
+    "hero": "media/hero.png",
+    "loop": "media/demo-loop.webm"
+  }
+}

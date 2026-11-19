@@ -1,0 +1,51 @@
+{
+  "slug": "multi-agent-research",
+  "name": "Multi-Agent Research System",
+  "pitch": "Compares three ways LLM agents coordinate to research a topic and write reports.",
+  "description": "You give it a research topic. A team of AI agents searches the web, pulls out key facts, analyzes them and writes a structured report. The same job runs three ways (fixed pipeline, shared blackboard memory, critic feedback loop), and a Streamlit dashboard scores and compares the results.",
+  "role": "TODO: my role on the team and which parts I built",
+  "stack": [
+    "Python 3.12",
+    "Streamlit",
+    "Plotly",
+    "Anthropic Claude API",
+    "Groq (openai/gpt-oss-20b, openai/gpt-oss-120b)",
+    "Ollama (qwen2.5:7b)",
+    "Tavily search API",
+    "httpx",
+    "python-dotenv",
+    "pandas"
+  ],
+  "status": "prototype",
+  "links": {
+    "repo": null,
+    "repoNote": "TODO: no git repository in the local copy; add the GitHub link if the team published one.",
+    "live": null,
+    "liveNote": "TODO: decide whether to host. A public deployment needs API keys, uses up free-tier quota for every visitor, and a full run takes about 6 minutes.",
+    "video": "TODO: upload C:\\Research_LLM\\demo\\multi_agent_research_demo.mp4 and add the link"
+  },
+  "glimpseType": "small interactive demo",
+  "glimpseMedia": {
+    "demoData": "TODO: data/run.json exported from a real 3-strategy run (see glimpse-plan.md)",
+    "loopFallback": "media/demo-loop.mp4",
+    "poster": "media/poster.jpg",
+    "hero": "media/hero.png"
+  },
+  "hardestProblem": "Making a pipeline written for one paid API run reliably on free and local models: a provider switch (Anthropic, Groq, Ollama) behind the interface the agents already used, a parser fix for Markdown-bolded output that silently dropped every source, output headroom for a reasoning model whose hidden tokens truncated JSON, and rate-limit handling for Groq's per-minute and per-day quotas.",
+  "results": [
+    "Full 3-strategy run with real Tavily web search (Groq gpt-oss-20b): 5 min 41 s, no errors (single run)",
+    "Sequential strategy with real web search (Groq gpt-oss-20b): 23.5 s, 4 LLM calls, 12 sources (single run)",
+    "Fully local sequential run on Ollama qwen2.5:7b, RTX 3050 6 GB: 7 min 17 s, 12 LLM calls, no API key (single run)",
+    "One comparison run (Groq gpt-oss-120b, simulated sources): runtimes 90.9 s / 120.5 s / 338.9 s and 12 / 12 / 22 LLM calls for sequential / shared memory / critic",
+    "TODO: averaged results over several topics with real search",
+    "TODO: course grade or feedback"
+  ],
+  "highlights": [
+    "Built a multi-agent research pipeline in Python with five specialized LLM agents (query generation, search, extraction, analysis, report) plus a critic, run under three coordination strategies for side-by-side comparison.",
+    "Implemented a critic feedback loop that scores drafts against a 7.5/10 threshold and sends specific feedback back for up to 3 revisions each of the analysis and the report.",
+    "Built an LLM-as-judge evaluation that scores each report on quality, factual accuracy and hallucination rate, combines them into a weighted composite (35/35/30), and reports a winner per metric in a Streamlit + Plotly dashboard.",
+    "Added a provider layer so the same agents run on Anthropic Claude, Groq or a local Ollama model from one .env setting, letting the project run with no paid API key (full local run in 7 min 17 s on an RTX 3050 6 GB).",
+    "Fixed reliability problems that showed up on new models: a parser that silently dropped Markdown-formatted results, JSON truncated by a reasoning model's hidden tokens, and free-tier rate limits handled with retries and a clear daily-quota error.",
+    "Integrated Tavily web search with URL de-duplication and a clearly labelled LLM-simulated fallback; a full 3-strategy run with real search finished in 5 min 41 s."
+  ]
+}

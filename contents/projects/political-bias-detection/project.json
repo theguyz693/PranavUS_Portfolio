@@ -1,0 +1,21 @@
+{
+  "slug": "political-bias-detection",
+  "name": "Political Bias Detection",
+  "pitch": "Reads a news headline, says whether it leans left, right or centre, and shows the words that drove the call.",
+  "description": "A Social Computing course mini-project, done in a team of two. Headlines are turned into sentence embeddings, a classifier learns Left, Center and Right from labelled Kaggle datasets, and SHAP shows which words pushed a prediction. A Gradio app lets you upload training CSVs, train, type a headline and see the prediction, its confidence, a word-importance plot and the most similar headlines it was trained on. The proposal and literature survey are written up in the course slides; the notebook is the working prototype.",
+  "stack": ["Python", "scikit-learn", "SHAP", "Sentence-Transformers", "spaCy", "Gradio", "Kaggle datasets"],
+  "status": "prototype",
+  "role": "team project",
+  "links": {},
+  "glimpseType": "none",
+  "hardestProblem": "Making the answer explainable instead of a bare label. The proposal argued that most bias detectors are black boxes and learn a publisher's style rather than real bias, so the prototype pairs every prediction with a SHAP word-importance plot and nearest training examples.",
+  "highlights": [
+    "Literature survey of eight papers on political-bias detection, with gaps identified in each",
+    "Prototype: MiniLM embeddings with logistic regression (class-balanced) and a nearest-neighbour lookup for similar headlines",
+    "SHAP word-level explanations and a Gradio interface for training and testing",
+    "Original plan was to fine-tune BERT and predict framing, sensationalism and loaded language; the notebook is the simpler first version"
+  ],
+  "results": [],
+  "inRoom": false,
+  "order": 101
+}

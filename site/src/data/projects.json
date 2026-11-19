@@ -1,0 +1,573 @@
+[
+  {
+    "slug": "cadence",
+    "name": "Cadence",
+    "pitch": "Productivity web app for routines on 1–20 day cycles, plus tasks, goals and focus.",
+    "description": "Cadence is a full-stack web app for keeping habits that are not daily. A routine repeats on a cycle you design, and the Today screen always shows what to do next. It also has tasks, goals with steps, a calendar that imports Google/Outlook/Apple calendars, a Lock In focus timer, and a no-signup demo that runs in the browser.",
+    "stack": [
+      "React 19",
+      "Vite 8",
+      "React Router 7",
+      "CSS design tokens",
+      "Node.js",
+      "Express 5",
+      "JWT",
+      "bcrypt",
+      "MongoDB",
+      "Mongoose 9",
+      "node-ical",
+      "Vercel (serverless)",
+      "node:test",
+      "Playwright-core",
+      "ffmpeg"
+    ],
+    "status": "in progress",
+    "role": null,
+    "links": {
+      "live": "https://cadence-delta-five.vercel.app"
+    },
+    "glimpseType": "interactive-demo",
+    "hardestProblem": "Nine complete visual themes on one component tree, done with a semantic CSS token layer, planned selector specificity, a variable-driven focus timer and fonts loaded on demand.",
+    "results": [
+      "Deployed and running at the live link."
+    ],
+    "highlights": [
+      "Built a full-stack productivity app (React 19, Express 5, MongoDB) with routines on 1–20 day cycles, tasks, goals, a calendar and a focus timer, deployed to Vercel with the API as a serverless function.",
+      "Designed a theme system of nine complete visual themes on one component tree using CSS design tokens and planned selector specificity, with live switching and fonts loaded on demand.",
+      "Implemented two-way calendar integration: importing Google/Outlook/Apple calendars from iCal links (node-ical) and publishing a private iCal feed calendar apps can subscribe to.",
+      "Wrote a rule-based natural-language quick-add parser (\"gym 7am mon wed fri\" → a routine on Mon/Wed/Fri at 7:00), covered by unit tests with Node's built-in test runner.",
+      "Built a no-signup demo mode by routing the API client to an in-browser mock backend, so the full app runs on sample data with nothing sent to a server.",
+      "Automated a 1080p product demo video with Playwright-core (CDP screencast) and ffmpeg, scripted end to end."
+    ],
+    "media": {
+      "loop": [
+        "/media/cadence/demo-loop.webm",
+        "/media/cadence/demo-loop.mp4"
+      ],
+      "poster": "/media/cadence/poster.jpg",
+      "hero": null,
+      "full": "/media/cadence/full-demo.mp4"
+    },
+    "inRoom": true,
+    "order": 0,
+    "todos": [
+      "repo link held back: https://github.com/theguyz693/cadence",
+      "repoNote: TODO: confirm the repo is public before linking",
+      "TODO: usage numbers (users, sessions), if any exist."
+    ]
+  },
+  {
+    "slug": "collectorhub",
+    "name": "CollectorHub",
+    "pitch": "A Hot Wheels collector's garage: scan a car, catalogue it, browse it in 3D.",
+    "description": "A web app for cataloguing a personal Hot Wheels collection. It reads a car's barcode and printed text from a photo, matches it against a built-in catalogue of 4,041 real mainline releases, and asks you to confirm before adding it. The collection can be browsed as a lit display shelf, a one-car-at-a-time 3D showcase, or a grid.",
+    "stack": [
+      "React 19",
+      "TypeScript",
+      "Vite 6",
+      "React Router 7",
+      "Tailwind CSS 4",
+      "Framer Motion",
+      "three.js",
+      "Tesseract.js",
+      "ZXing (@zxing/browser)",
+      "Supabase (Postgres + row-level security; not yet connected)",
+      "Node.js (MediaWiki API import script)",
+      "Vitest",
+      "pnpm + Turborepo"
+    ],
+    "status": "in progress",
+    "role": null,
+    "links": {
+      "repo": "https://github.com/theguyz693/HW_db"
+    },
+    "glimpseType": "small interactive demo",
+    "hardestProblem": "Making thousands of inconsistent wiki product photos look like one consistent collectible: real card photo lookup by toy code, in-browser pixel analysis (cutout detection and flood-fill backdrop removal with a quality check), and explicit per-car overrides, all rendered in one shared package frame.",
+    "results": [
+      "4,041 Hot Wheels mainline releases (2018-2026) imported into a 471 KB JSON catalogue (about 132 KB gzipped)",
+      "21 unit tests passing across 4 files",
+      "Matcher ranks the full catalogue within a 300 ms test budget",
+      "Informal check: real card photo found for 17 of 18 hand-picked 2023-2025 releases",
+      "Main JS bundle reduced from 2.84 MB to 2.42 MB by replacing a charting library with CSS charts"
+    ],
+    "highlights": [
+      "Built a Hot Wheels collection web app in React 19, TypeScript and Vite with three garage views (CSS display shelf, three.js 3D showcase, filterable grid) driven by one shared filter set.",
+      "Wrote a Node import script against the MediaWiki API that turned the Hot Wheels Wiki's yearly release tables into a 4,041-release catalogue (471 KB JSON, about 132 KB gzipped), covered by parser tests.",
+      "Implemented in-browser car identification: ZXing barcode decoding plus Tesseract.js OCR feeding a weighted matcher with OCR digit repair and barcode checksum validation, which explains each match and ranks the full catalogue within a 300 ms test budget.",
+      "Standardised inconsistent product photos with a real card photo lookup by toy code, plus in-browser pixel analysis (cutout detection, flood-fill backdrop removal with a quality check) and per-item overrides.",
+      "Built a three.js card-carousel showcase that reuses one renderer and two model slots, slides cars in 460 ms, queues rapid input and respects reduced motion.",
+      "Hardened Supabase row-level security so users can only write items into collections they own, and covered core logic with 21 Vitest unit tests."
+    ],
+    "media": {
+      "loop": [
+        "/media/collectorhub/demo-loop.webm",
+        "/media/collectorhub/demo-loop.mp4"
+      ],
+      "poster": "/media/collectorhub/poster.jpg",
+      "hero": null,
+      "full": null
+    },
+    "inRoom": true,
+    "order": 0,
+    "todos": [
+      "liveNote: TODO: deploy (e.g. Vercel/Netlify) and add the URL",
+      "video: TODO: link to an uploaded demo video, if any",
+      "TODO: photo-scan identification accuracy on real uploads",
+      "TODO: usage numbers once deployed"
+    ]
+  },
+  {
+    "slug": "evacuation-planner",
+    "name": "Crowd-Aware Evacuation Planner",
+    "pitch": "Plans building evacuations that account for crowds, fire and smoke, tested on simulation.",
+    "description": "A capstone research project (Team 212) that decides which exit each person should use in a fire. It books capacity on corridors, doors and stairs ahead of time, uses a hybrid ML model for crossing times, and is tested on a seeded simulator calibrated on real crowd data, with a campus and a hospital building.",
+    "stack": [
+      "Python",
+      "NetworkX",
+      "NumPy",
+      "pandas",
+      "SciPy",
+      "scikit-learn",
+      "LightGBM",
+      "FastAPI",
+      "Uvicorn",
+      "Matplotlib",
+      "HTML/JS dashboards"
+    ],
+    "status": "in progress",
+    "role": null,
+    "links": {},
+    "glimpseType": "interactive-demo",
+    "hardestProblem": "TODO: confirm. Best-documented candidate: making the ML delay model trustworthy on real people. Pure ML scored 7.16 s error on real crowd data; calibrating the simulator and learning only a correction to a physics formula brought it to 2.12 s.",
+    "results": [
+      "Look-ahead planning beat shortest-safe-path significantly in 8 of 10 campus scenarios; up to about 36% faster last-out (200 people on floor 3: 367 s to 234 s).",
+      "ML crossing-time error 4.76 s to 2.41 s on 784,014 held-out simulated crossings; 2.12 s on 1,813 real crossings (hybrid model).",
+      "Transferred to a 124-node hospital building: faster walking-crowd exit in 6 of 6 scenarios.",
+      "Gain came from coordination, not prediction accuracy."
+    ],
+    "highlights": [
+      "Built a seeded evacuation simulator and five routing methods in Python (NetworkX, NumPy); a look-ahead capacity-booking planner cut last-out time up to 36% vs shortest-safe-path, significant in 8 of 10 campus scenarios over 2,766 runs.",
+      "Trained a hybrid LightGBM model (physics formula x learned correction) on 784,014 simulated crossings; halved held-out error (4.76 s to 2.41 s) and reached 2.12 s error on real crowd data where pure ML scored 7.16 s.",
+      "Calibrated the simulator on real Juelich crowd measurements, raising door flow from 32%-38% to 98%-122% of lab values, and checked stair speed against NIST drill data.",
+      "Showed the method transfers to a second building (100-bed hospital graph, 124 nodes): faster walking-crowd evacuation in 6 of 6 scenarios; identified the ramp as the single point of failure (42 people stranded if blocked in a fire).",
+      "Optimised the planner with A* and cached edge costs (median 5.3x faster); it re-plans 2,000 people on a 452-node campus in 1.06 s.",
+      "Shipped FastAPI endpoints, a 3D dashboard and a research dashboard, with one-command reproduction and 13 test files. TODO: confirm which parts you personally built."
+    ],
+    "media": {
+      "loop": [
+        "/media/evacuation-planner/demo-loop.webm",
+        "/media/evacuation-planner/demo-loop.mp4"
+      ],
+      "poster": "/media/evacuation-planner/poster.jpg",
+      "hero": null,
+      "full": "/media/evacuation-planner/full-demo.mp4"
+    },
+    "inRoom": true,
+    "order": 0,
+    "todos": [
+      "repo link held back: https://github.com/theguyz693/capstoneML-dev",
+      "repoNote: TODO: confirm the repo is public before linking",
+      "live: TODO: none known",
+      "TODO: change to finished if the capstone is closed",
+      "TODO: publication status, grade or award, if any."
+    ]
+  },
+  {
+    "slug": "light-reaction",
+    "name": "Light Reaction",
+    "pitch": "Makes a Bluetooth RGB light glow in the colour of your screen.",
+    "description": "",
+    "stack": [
+      "Python",
+      "asyncio",
+      "aiohttp",
+      "bleak",
+      "mss",
+      "Pillow",
+      "JavaScript",
+      "HTML",
+      "CSS"
+    ],
+    "status": "in progress",
+    "role": null,
+    "links": {
+      "repo": "https://github.com/theguyz693/light-reaction"
+    },
+    "glimpseType": "interactive-demo",
+    "hardestProblem": "TODO: confirm. Code evidence: working out the light's vendor-specific BLE command protocol by testing (power-off sequence with fallbacks, RGB-restore for power-on).",
+    "results": [
+      "Screen colour sync to the physical light works. No performance metrics recorded. TODO: add if measured."
+    ],
+    "highlights": [
+      "Built a screen-reactive 'Ambilight' for a Bluetooth LE RGB light in Python, capturing the display with mss/Pillow and streaming averaged colour over BLE with bleak.",
+      "Designed a single-process asyncio backend (aiohttp REST + WebSocket) that coordinates BLE I/O, screen capture and live UI updates on one event loop.",
+      "Built a local browser dashboard (vanilla JS) with BLE device scanning, mode switching (sync / manual / off), monitor selection, brightness, presets and live colour preview.",
+      "Added adjustable sync rate (3-15 FPS) and a colour-change threshold to limit BLE writes.",
+      "Worked out the light's vendor-specific 9-byte command protocol by testing, including a power-off sequence with fallbacks, and wrote a CLI tester and GATT inspection endpoint to support it.",
+      "Supports multi-monitor setups by enumerating displays with mss and letting the user choose the capture source."
+    ],
+    "media": {
+      "loop": [
+        "/media/light-reaction/demo-loop.webm",
+        "/media/light-reaction/demo-loop.mp4"
+      ],
+      "poster": "/media/light-reaction/poster.jpg",
+      "hero": null,
+      "full": null
+    },
+    "inRoom": true,
+    "order": 0,
+    "todos": []
+  },
+  {
+    "slug": "lockout",
+    "name": "Lockout",
+    "pitch": "Chrome extension that blocks distracting sites and Shorts, with escalating lock-in levels.",
+    "description": "A Manifest V3 Chrome extension for staying focused. You pick a lock-in level and a timer and the sites on your list are blocked until it ends; the higher the level, the harder it is to quit. It hides YouTube Shorts without breaking the rest of YouTube, counts the Shorts and Reels you scroll, tracks time on entertainment sites, and keeps day streaks. All data stays in the browser: no server, no account, no tracking.",
+    "stack": [
+      "JavaScript (vanilla, no framework or build step)",
+      "HTML",
+      "CSS (CSS variables, three themes)",
+      "Chrome Extensions Manifest V3 (service worker, content scripts, storage, tabs, alarms, idle, scripting, activeTab, commands, optional host permissions)",
+      "Shadow DOM",
+      "Bundled OFL fonts (Geist, Geist Mono, Host Grotesk, IBM Plex Mono, Instrument Sans)",
+      "Python (Pillow, Playwright, ffmpeg via imageio-ffmpeg) for icons and the demo video",
+      "PowerShell (packaging script)"
+    ],
+    "status": "finished",
+    "role": null,
+    "links": {
+      "repo": "https://github.com/theguyz693/Lockout"
+    },
+    "glimpseType": "small interactive demo",
+    "hardestProblem": "Making stateful features (time tracking, a floating counter, the block flow) reliable inside Manifest V3 and on hostile pages: persisting the tracked visit because the service worker can be killed, capping sleep gaps, serializing storage writes, rebuilding the counter without innerHTML for Trusted Types, and moving the permission request out of the popup. TODO: confirm the counter on live YouTube in real Chrome.",
+    "results": [
+      "Version 1.6.1, feature-complete, about 5,500 lines of JS, HTML and CSS",
+      "6 API permissions plus optional per-site host access; the first version asked for <all_urls> and webNavigation",
+      "No network requests of its own; all data in chrome.storage.local",
+      "Web Store assets written: icons, privacy policy, listing text, screenshot list, packaging script",
+      "Scripted 77-second 1080p demo video rendered from the real pages",
+      "Logic tests (levels, streaks, route matching, tracker, on-demand counter) passed at the last run. TODO: add the test scripts to the repo"
+    ],
+    "highlights": [
+      "Built a Manifest V3 Chrome extension in vanilla JavaScript (about 5,500 lines) that blocks distracting sites during timed focus sessions, with four lock-in levels that progressively raise the cost of quitting (wait timer, typed no-paste pledge, frozen blocklist, no early exit).",
+      "Implemented YouTube Shorts hiding and Shorts/Reels counting with a content script and CSS selectors, plus URL-path blocking for youtube.com/shorts and instagram.com/reels, so the rest of YouTube stays usable.",
+      "Engineered a service-worker-safe time tracker (alarms, focus and idle events, persisted visit state, capped sleep gaps, serialized storage writes) that totals daily time on listed sites with no backend.",
+      "Created a draggable, resizable floating counter in a closed Shadow DOM, built without innerHTML to satisfy Trusted Types, and summonable on any tab with Alt+Shift+L through activeTab, avoiding an all-sites permission.",
+      "Replaced blanket <all_urls> and webNavigation access with six API permissions plus optional per-site access requested at runtime; all data stays in chrome.storage.local with no network requests.",
+      "Designed three themes (Classic Dark, Classic Light, Industrial) on shared components with CSS variables and bundled open-source fonts; wrote Web Store assets and a scripted demo video rendered with Playwright and ffmpeg."
+    ],
+    "media": {
+      "loop": [
+        "/media/lockout/demo-loop.webm",
+        "/media/lockout/demo-loop.mp4"
+      ],
+      "poster": "/media/lockout/poster.jpg",
+      "hero": null,
+      "full": "/media/lockout/full-demo.mp4"
+    },
+    "inRoom": true,
+    "order": 0,
+    "todos": [
+      "liveNote: TODO: Chrome Web Store link once submitted and approved. Not published as far as I know.",
+      "video: TODO: link to the uploaded demo video (local file: demo/lockout-demo.mp4)",
+      "TODO: installs, users or feedback (none yet)"
+    ]
+  },
+  {
+    "slug": "multi-agent-research",
+    "name": "Multi-Agent Research System",
+    "pitch": "Compares three ways LLM agents coordinate to research a topic and write reports.",
+    "description": "You give it a research topic. A team of AI agents searches the web, pulls out key facts, analyzes them and writes a structured report. The same job runs three ways (fixed pipeline, shared blackboard memory, critic feedback loop), and a Streamlit dashboard scores and compares the results.",
+    "stack": [
+      "Python 3.12",
+      "Streamlit",
+      "Plotly",
+      "Anthropic Claude API",
+      "Groq (openai/gpt-oss-20b, openai/gpt-oss-120b)",
+      "Ollama (qwen2.5:7b)",
+      "Tavily search API",
+      "httpx",
+      "python-dotenv",
+      "pandas"
+    ],
+    "status": "prototype",
+    "role": "TODO: my role on the team and which parts I built",
+    "links": {},
+    "glimpseType": "small interactive demo",
+    "hardestProblem": "Making a pipeline written for one paid API run reliably on free and local models: a provider switch (Anthropic, Groq, Ollama) behind the interface the agents already used, a parser fix for Markdown-bolded output that silently dropped every source, output headroom for a reasoning model whose hidden tokens truncated JSON, and rate-limit handling for Groq's per-minute and per-day quotas.",
+    "results": [
+      "Full 3-strategy run with real Tavily web search (Groq gpt-oss-20b): 5 min 41 s, no errors (single run)",
+      "Sequential strategy with real web search (Groq gpt-oss-20b): 23.5 s, 4 LLM calls, 12 sources (single run)",
+      "Fully local sequential run on Ollama qwen2.5:7b, RTX 3050 6 GB: 7 min 17 s, 12 LLM calls, no API key (single run)",
+      "One comparison run (Groq gpt-oss-120b, simulated sources): runtimes 90.9 s / 120.5 s / 338.9 s and 12 / 12 / 22 LLM calls for sequential / shared memory / critic"
+    ],
+    "highlights": [
+      "Built a multi-agent research pipeline in Python with five specialized LLM agents (query generation, search, extraction, analysis, report) plus a critic, run under three coordination strategies for side-by-side comparison.",
+      "Implemented a critic feedback loop that scores drafts against a 7.5/10 threshold and sends specific feedback back for up to 3 revisions each of the analysis and the report.",
+      "Built an LLM-as-judge evaluation that scores each report on quality, factual accuracy and hallucination rate, combines them into a weighted composite (35/35/30), and reports a winner per metric in a Streamlit + Plotly dashboard.",
+      "Added a provider layer so the same agents run on Anthropic Claude, Groq or a local Ollama model from one .env setting, letting the project run with no paid API key (full local run in 7 min 17 s on an RTX 3050 6 GB).",
+      "Fixed reliability problems that showed up on new models: a parser that silently dropped Markdown-formatted results, JSON truncated by a reasoning model's hidden tokens, and free-tier rate limits handled with retries and a clear daily-quota error.",
+      "Integrated Tavily web search with URL de-duplication and a clearly labelled LLM-simulated fallback; a full 3-strategy run with real search finished in 5 min 41 s."
+    ],
+    "media": {
+      "loop": [
+        "/media/multi-agent-research/demo-loop.webm",
+        "/media/multi-agent-research/demo-loop.mp4"
+      ],
+      "poster": "/media/multi-agent-research/poster.jpg",
+      "hero": null,
+      "full": "/media/multi-agent-research/full-demo.mp4"
+    },
+    "inRoom": true,
+    "order": 0,
+    "todos": [
+      "repoNote: TODO: no git repository in the local copy; add the GitHub link if the team published one.",
+      "liveNote: TODO: decide whether to host. A public deployment needs API keys, uses up free-tier quota for every visitor, and a full run takes about 6 minutes.",
+      "video: TODO: upload C:\\Research_LLM\\demo\\multi_agent_research_demo.mp4 and add the link",
+      "TODO: averaged results over several topics with real search",
+      "TODO: course grade or feedback"
+    ]
+  },
+  {
+    "slug": "novi",
+    "name": "Novi",
+    "pitch": "Local AI desktop agent for Windows: voice control, screen understanding, parallel workers.",
+    "description": "A voice assistant that lives on the Windows desktop as an animated pixel-art robot and carries out spoken requests on the PC: music, live weather and travel times, notes, PowerPoint decks, explaining anything snipped from the screen, and taught routines. All models run locally through Ollama.",
+    "stack": [
+      "Python",
+      "Ollama (qwen2.5:3b, qwen2.5vl:3b, llama3.2:1b, qwen2.5:7b)",
+      "faster-whisper",
+      "Windows UI Automation",
+      "pywin32",
+      "PowerPoint COM",
+      "Windows OCR (winocr)",
+      "Playwright",
+      "WinRT media controls",
+      "Tkinter",
+      "SQLite",
+      "pytest"
+    ],
+    "status": "in progress",
+    "role": null,
+    "links": {},
+    "glimpseType": "recorded screen loop",
+    "hardestProblem": "Getting a small local 3B model to drive a real desktop reliably and safely: deterministic fast paths for common intents, agent loop guards and completion nudges, UI Automation by control name, and document-state safety checks.",
+    "results": [
+      "63 offline unit tests passing",
+      "About 3x model throughput for 4 simultaneous calls after enabling Ollama parallelism (2.3 s vs 1.8 s for one call; informal measurement, RTX 3050 6 GB)",
+      "Two-city weather comparison with two parallel workers answered in 4-6 s (informal measurement)",
+      "Scripted self-recorded demo: 13 scenes, all successful in one take"
+    ],
+    "highlights": [
+      "Built a fully local Windows voice agent in Python (faster-whisper, Ollama with qwen2.5 3B models) that controls apps, media, PowerPoint and the browser from natural-language requests on a 6 GB laptop GPU.",
+      "Designed a coordinator that splits goals across up to 4 parallel workers, each with its own headless Playwright browser, with a shared screen lock for desktop actions; about 3x throughput for 4 simultaneous model calls after enabling Ollama parallelism.",
+      "Implemented snip-to-ask screen Q&A combining Windows OCR with a local vision model (qwen2.5vl), including follow-up questions.",
+      "Added persistent SQLite memory and teachable workflows (spoken instructions or recorded demonstration, replayed via UI Automation by control name) with an in-app editor.",
+      "Improved reliability of a small local model with deterministic fast paths, loop guards and document-safety checks, covered by 63 offline pytest tests.",
+      "Built an animated pixel-art desktop character, worker sprites and task panel in Tkinter on an event bus, plus a self-recording scripted demo."
+    ],
+    "media": {
+      "loop": [
+        "/media/novi/demo-loop.webm",
+        "/media/novi/demo-loop.mp4"
+      ],
+      "poster": "/media/novi/poster.jpg",
+      "hero": null,
+      "full": null
+    },
+    "inRoom": true,
+    "order": 0,
+    "todos": [
+      "repo link held back: https://github.com/theguyz693/AI-Voice-Assistant",
+      "repoNote: TODO: push the feature/agent-workers branch; the public repo currently shows only the original version.",
+      "video: TODO: link to the uploaded demo video",
+      "TODO: success rate on a fixed task benchmark"
+    ]
+  },
+  {
+    "slug": "payment-tracker",
+    "name": "Payment Tracker",
+    "pitch": "Personal finance tracker with a reliable, duplicate-proof payment event pipeline.",
+    "description": "A web app for tracking bills, recurring payments, money owed, cash flow, savings goals, loans and investments, with per-user data. Its Integrations Hub sends events from simulated payment and broker providers through a pipeline that records each payment exactly once, even with repeat deliveries, double clicks or crashes. Providers are simulators; no real bank, UPI or broker connections.",
+    "stack": [
+      "Next.js 15 (App Router, server actions)",
+      "React 19",
+      "TypeScript",
+      "MongoDB Atlas (multi-document transactions)",
+      "Better Auth",
+      "Zod",
+      "Tailwind CSS v4",
+      "Recharts",
+      "three.js / React Three Fiber",
+      "Vitest",
+      "Vercel (serverless + Cron)"
+    ],
+    "status": "finished",
+    "role": null,
+    "links": {
+      "repo": "https://github.com/theguyz693/payment_tracker",
+      "live": "https://paymenttracker-ashen.vercel.app"
+    },
+    "glimpseType": "small interactive demo",
+    "hardestProblem": "Exactly-once payment processing on serverless without a message queue: idempotency keys with payload hashes and leases, a unique index per provider event, lease-based claiming with crash recovery, all-or-nothing transactional processing with audit, and business vs transient failure classification with exponential backoff.",
+    "results": [
+      "123 unit tests and 47 integration tests (real MongoDB) passing",
+      "Deployed and publicly reachable on Vercel",
+      "Scripted, narrated end-to-end demo video (8:17) against a test database",
+      "Simulated UPI event processed in about 60 ms in local testing (informal, single observation)"
+    ],
+    "highlights": [
+      "Built and deployed a full-stack personal finance app with Next.js 15, React 19, TypeScript and MongoDB Atlas on Vercel, covering recurring payments, cash flow, goals, loans/EMIs, investments with FIFO lots and XIRR, and a cash-flow forecast.",
+      "Designed an exactly-once event pipeline on MongoDB without a message queue: a unique index per provider event, 30-second leases, transactional processing with an audit trail, exponential-backoff retries and crash recovery.",
+      "Implemented idempotency keys (payload hash + lease + TTL) for user actions, so a double-clicked 'Accept & pay' records one payment and the repeat replays the stored result.",
+      "Added an API protection layer: session checks on every server action, MongoDB-backed rate limits per user and action, HMAC-signed webhooks with a 5-minute replay window, Zod validation and structured logs with hashed user ids.",
+      "Wrote 123 unit tests and 47 integration tests against a real MongoDB replica set, covering duplicates, injected failures, crashes, concurrent sells and stale edits.",
+      "Built a monitoring dashboard (throughput, duplicates prevented, retries, average and p95 processing time, rate-limit rejections) from stored data, plus a scripted, narrated end-to-end demo video."
+    ],
+    "media": {
+      "loop": [
+        "/media/payment-tracker/demo-loop.webm",
+        "/media/payment-tracker/demo-loop.mp4"
+      ],
+      "poster": "/media/payment-tracker/poster.jpg",
+      "hero": null,
+      "full": null
+    },
+    "inRoom": true,
+    "order": 0,
+    "todos": [
+      "video: TODO: link to the uploaded demo video",
+      "TODO: confirm status. Deployed and working; scheduled retry worker on the live site needs CRON_SECRET set in Vercel.",
+      "TODO: real usage data, if any",
+      "TODO: production p95 processing time from the monitoring page"
+    ]
+  },
+  {
+    "slug": "vibeflow",
+    "name": "VibeFlow",
+    "pitch": "Fullscreen 3D lyric and album-art visuals that react to your Spotify playback.",
+    "description": "VibeFlow is a visual companion for Spotify, not a music player. It signs in to Spotify, reads the current track, and turns it into fullscreen visuals: animated scenes, a 3D iPod-style player, and four synced-lyric visuals built around a spinning record. It runs as an Electron desktop app and as a Vercel-hosted web build.",
+    "stack": [
+      "React 19",
+      "TypeScript",
+      "Vite",
+      "electron-vite / Electron",
+      "three.js",
+      "react-three-fiber",
+      "drei",
+      "postprocessing",
+      "opentype.js",
+      "Spotify Web API (OAuth PKCE)",
+      "LRCLIB",
+      "Vercel"
+    ],
+    "status": "in progress",
+    "role": null,
+    "links": {
+      "live": "https://vibeflow-ivory.vercel.app"
+    },
+    "glimpseType": "interactive-demo",
+    "hardestProblem": "Making synced lyrics read clearly and stay in time in 3D: interpolating track position between 3-second polls, fading any screen that blocks the camera's view, and building see-through glass lettering from font outlines.",
+    "results": [
+      "Deployed on Vercel from the GitHub repo.",
+      "Four lyric visuals, a 3D iPod player and the Spotify Companion in one app."
+    ],
+    "highlights": [
+      "Built VibeFlow, a Spotify visual companion in React 19, TypeScript and three.js (react-three-fiber) that turns the current track into fullscreen 3D visuals, shipped as an Electron desktop app and a Vercel-hosted web build.",
+      "Implemented Spotify OAuth PKCE sign-in with token refresh and 3-second playback polling in a backend-free client app.",
+      "Added time-synced lyrics (LRCLIB) with progress interpolated between polls, driving four lyric visuals (Editorial, Reel 3D, Disc Reel, Floating Screens) from one shared lyric timeline.",
+      "Wrote a repeated-line chorus detector that drives glow and disc speed, so visuals have a calm baseline and a clear peak. (TODO: accuracy not measured.)",
+      "Built 3D glass lettering from font outlines (opentype.js to extruded, bevelled, smooth-shaded geometry) with a transmission and dispersion material, used in two visuals.",
+      "Built a 3D iPod-style player: the screen plane is sized from the model's front-face geometry, and a canvas texture shows now-playing and synced lyrics with click-wheel controls."
+    ],
+    "media": {
+      "loop": [
+        "/media/vibeflow/demo-loop.webm",
+        "/media/vibeflow/demo-loop.mp4"
+      ],
+      "poster": "/media/vibeflow/poster.jpg",
+      "hero": null,
+      "full": null
+    },
+    "inRoom": true,
+    "order": 0,
+    "todos": [
+      "repo link held back: https://github.com/theguyz693/vibeflow",
+      "repoNote: TODO: confirm the repo is public before linking",
+      "TODO: real outcome numbers (users, visits, performance measurements); none exist in the repo.",
+      "TODO: confirm whether visitors can sign in with Spotify on the live domain."
+    ]
+  },
+  {
+    "slug": "ride-sharing-dbms",
+    "name": "Ride Sharing DBMS",
+    "pitch": "A college ride-sharing system where the rules live in the database: stored procedures, triggers and transaction-safe booking.",
+    "description": "A DBMS course mini-project: passengers and drivers from different colleges create rides, book seats, pay, rate each other and see their ride history. The interesting part is the MySQL layer. Booking, payment, completion and cancellation are stored procedures, fares and seat checks are functions, triggers keep the ride history audited, and views give driver, passenger and payment summaries. A small Node.js and Express API and a plain HTML/CSS/JavaScript front end sit on top.",
+    "stack": [
+      "MySQL",
+      "SQL",
+      "Node.js",
+      "Express",
+      "mysql2",
+      "HTML / CSS / JavaScript"
+    ],
+    "status": "finished",
+    "role": "course project",
+    "links": {},
+    "glimpseType": "none",
+    "hardestProblem": "Stopping two people booking the last seat at the same time. Booking runs inside a transaction that locks the ride's row (SELECT ... FOR UPDATE), checks the seats left, and only then writes the booking, so a ride can't be overbooked.",
+    "results": [],
+    "highlights": [
+      "8 tables (college, passenger, vehicle, driver, ride, payment, rating, ride history), 8 stored procedures, 5 functions, 5 triggers and 4 views",
+      "Row locking and COMMIT/ROLLBACK for safe seat booking",
+      "Triggers write a ride-history audit trail when a ride is created or its status changes",
+      "REST API with 9 endpoints for rides, booking, completion, ratings, passengers and drivers"
+    ],
+    "media": {
+      "loop": [],
+      "poster": null,
+      "hero": "/media/ride-sharing-dbms/hero.gif",
+      "full": null
+    },
+    "inRoom": false,
+    "order": 100,
+    "todos": []
+  },
+  {
+    "slug": "political-bias-detection",
+    "name": "Political Bias Detection",
+    "pitch": "Reads a news headline, says whether it leans left, right or centre, and shows the words that drove the call.",
+    "description": "A Social Computing course mini-project, done in a team of two. Headlines are turned into sentence embeddings, a classifier learns Left, Center and Right from labelled Kaggle datasets, and SHAP shows which words pushed a prediction. A Gradio app lets you upload training CSVs, train, type a headline and see the prediction, its confidence, a word-importance plot and the most similar headlines it was trained on. The proposal and literature survey are written up in the course slides; the notebook is the working prototype.",
+    "stack": [
+      "Python",
+      "scikit-learn",
+      "SHAP",
+      "Sentence-Transformers",
+      "spaCy",
+      "Gradio",
+      "Kaggle datasets"
+    ],
+    "status": "prototype",
+    "role": "team project",
+    "links": {},
+    "glimpseType": "none",
+    "hardestProblem": "Making the answer explainable instead of a bare label. The proposal argued that most bias detectors are black boxes and learn a publisher's style rather than real bias, so the prototype pairs every prediction with a SHAP word-importance plot and nearest training examples.",
+    "results": [],
+    "highlights": [
+      "Literature survey of eight papers on political-bias detection, with gaps identified in each",
+      "Prototype: MiniLM embeddings with logistic regression (class-balanced) and a nearest-neighbour lookup for similar headlines",
+      "SHAP word-level explanations and a Gradio interface for training and testing",
+      "Original plan was to fine-tune BERT and predict framing, sensationalism and loaded language; the notebook is the simpler first version"
+    ],
+    "media": {
+      "loop": [],
+      "poster": null,
+      "hero": null,
+      "full": null
+    },
+    "inRoom": false,
+    "order": 101,
+    "todos": []
+  }
+]

@@ -1,0 +1,95 @@
+{
+  "_note": "Source: PRANAV_US_RESUME2.pdf (old resume). Owner approved everything public EXCEPT education (resume only). Tagline and about rewritten 2026-11-19 to be plainer and more humble; owner to approve.",
+  "name": "Pranav U S",
+  "location": "Bengaluru, India",
+  "email": "uspranav05@gmail.com",
+  "phone": "+91 70224 53335",
+  "links": {
+    "github": "https://github.com/theguyz693"
+  },
+  "linkedin": "https://www.linkedin.com/in/pranavus/",
+  "copy": {
+    "tagline": "Hi, I'm Pranav.",
+    "about": "I'm not an expert in any one thing. I put steady effort into a lot of things and keep going until they work. Some of what's here I built because I wanted to use it, and some came from team projects. It's an honest picture of what I've made so far, rough edges included."
+  },
+  "experience": [
+    {
+      "role": "AI & Web Development Intern",
+      "org": "Kaiburr",
+      "place": "Remote",
+      "from": "Jul 2025",
+      "to": "Oct 2025",
+      "points": [
+        "Built an OCR pipeline using PyMuPDF, Tesseract and EasyOCR to extract text from PDFs, images and scanned documents.",
+        "Developed a RAG-based document querying system using Haystack and OpenLLaMA.",
+        "Built a scalable document processing service supporting multiple file formats and OCR workflows."
+      ]
+    }
+  ],
+  "skills": {
+    "Languages": [
+      "Python",
+      "C++",
+      "Java",
+      "SQL"
+    ],
+    "Frameworks and libraries": [
+      "React",
+      "Node.js",
+      "Express.js",
+      "Scikit-learn",
+      "Hugging Face Transformers"
+    ],
+    "Databases": [
+      "MongoDB",
+      "MySQL"
+    ],
+    "Tools": [
+      "Git",
+      "GitHub",
+      "VS Code"
+    ],
+    "Concepts": [
+      "Machine Learning",
+      "NLP",
+      "LLMs",
+      "RAG",
+      "Explainable AI"
+    ]
+  },
+  "resumeOnly": {
+    "education": {
+      "school": "PES University, Bangalore",
+      "degree": "B.Tech in Artificial Intelligence & Machine Learning",
+      "expected": "2027",
+      "cgpa": "7.65/10"
+    },
+    "projects": [
+      {
+        "name": "Crowd-Aware Evacuation Planner (capstone, team project)",
+        "stack": "Python · NetworkX · NumPy · LightGBM · FastAPI",
+        "text": "Built a seeded evacuation simulator and five routing methods; a look-ahead capacity-booking planner cut last-out time by up to 36% against shortest-safe-path, significant in 8 of 10 campus scenarios over 2,766 runs. Trained a hybrid physics-plus-LightGBM crossing-time model on 784,014 simulated crossings, halving held-out error (4.76 s to 2.41 s), and calibrated the simulator on real Juelich crowd data. Transferred the method to a 100-bed hospital graph, with faster evacuation in 6 of 6 scenarios."
+      },
+      {
+        "name": "Payment Tracker",
+        "stack": "Next.js 15 · React 19 · TypeScript · MongoDB Atlas · Better Auth · Vercel",
+        "text": "Built and deployed a personal finance app covering recurring payments, cash flow, loans and investments. Designed an exactly-once payment event pipeline on MongoDB without a message queue, using unique event indexes, leases, transactions, idempotency keys and retries with backoff, so repeat deliveries, double clicks and crashes record a payment once. Wrote 123 unit and 47 integration tests against a real MongoDB replica set."
+      },
+      {
+        "name": "Cadence — Productivity Platform",
+        "stack": "React 19 · Node.js · Express 5 · MongoDB Atlas · JWT · Vercel",
+        "text": "Built and deployed a full-stack productivity app with routines on 1–20 day cycles, tasks, goals, a calendar and a focus timer, plus a website-blocker Chrome extension. Designed a nine-theme system on one component tree with CSS design tokens, added two-way iCal calendar sync, and wrote a natural-language quick-add parser with unit tests."
+      },
+      {
+        "name": "Multi-Agent Research Assistant",
+        "stack": "Python · Claude API · Tavily · Streamlit · Plotly",
+        "text": "Architected a multi-agent research assistant comparing Sequential, Shared-Memory (Blackboard) and Critic Feedback orchestration for automated research and report generation. Implemented specialized agents and an LLM-as-judge evaluation measuring report quality, factual accuracy and hallucination rate, with a provider layer that also runs on Groq or a local Ollama model."
+      }
+    ],
+    "additional": "Novi (local voice agent for Windows) · Lockout (Chrome extension) · Light Reaction · CollectorHub · VibeFlow · Ride Sharing DBMS · Political Bias Detection · Sales Forecasting & Analytics Dashboard",
+    "note": "Updated Nov 2026: top four projects from project files; school marks deliberately left off."
+  },
+  "badge": "4th Year B.Tech CSE (AIML) Student",
+  "instagram": null,
+  "instagramNote": "TODO: owner to send the Instagram link."
+}

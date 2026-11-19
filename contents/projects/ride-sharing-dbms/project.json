@@ -1,0 +1,30 @@
+{
+  "slug": "ride-sharing-dbms",
+  "name": "Ride Sharing DBMS",
+  "pitch": "A college ride-sharing system where the rules live in the database: stored procedures, triggers and transaction-safe booking.",
+  "description": "A DBMS course mini-project: passengers and drivers from different colleges create rides, book seats, pay, rate each other and see their ride history. The interesting part is the MySQL layer. Booking, payment, completion and cancellation are stored procedures, fares and seat checks are functions, triggers keep the ride history audited, and views give driver, passenger and payment summaries. A small Node.js and Express API and a plain HTML/CSS/JavaScript front end sit on top.",
+  "stack": [
+    "MySQL",
+    "SQL",
+    "Node.js",
+    "Express",
+    "mysql2",
+    "HTML / CSS / JavaScript"
+  ],
+  "status": "finished",
+  "role": "course project",
+  "links": {
+    "repo": "https://github.com/theguyz693/DBMS-PROJECT-AM916-918"
+  },
+  "glimpseType": "none",
+  "hardestProblem": "Stopping two people booking the last seat at the same time. Booking runs inside a transaction that locks the ride's row (SELECT ... FOR UPDATE), checks the seats left, and only then writes the booking, so a ride can't be overbooked.",
+  "highlights": [
+    "8 tables (college, passenger, vehicle, driver, ride, payment, rating, ride history), 8 stored procedures, 5 functions, 5 triggers and 4 views",
+    "Row locking and COMMIT/ROLLBACK for safe seat booking",
+    "Triggers write a ride-history audit trail when a ride is created or its status changes",
+    "REST API with 9 endpoints for rides, booking, completion, ratings, passengers and drivers"
+  ],
+  "results": [],
+  "inRoom": false,
+  "order": 100
+}

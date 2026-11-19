@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Light Reaction demo</title>
+<style>
+  html,body{margin:0;height:100%;background:#090a0f;color:#f0f2f8;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden}
+  #root{display:flex;width:1280px;height:720px}
+  #left{width:438px;padding:22px 20px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;border-right:1px solid rgba(255,255,255,.08)}
+  h2{margin:0;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8e95ab;font-weight:600}
+  #screen{width:100%;aspect-ratio:16/9;border-radius:10px;border:6px solid #1b1d29;box-shadow:0 0 0 1px rgba(255,255,255,.08);box-sizing:border-box}
+  #lampbox{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+  #lamp{width:150px;height:150px;border-radius:50%;background:#000;transition:none}
+  #hex{font-family:Consolas,monospace;font-size:15px;color:#c9cee0;letter-spacing:.04em;min-height:20px}
+  #note{font-size:11px;color:#8e95ab;text-align:center}
+  #frame{width:1100px;height:940px;border:0;transform:scale(.765);transform-origin:0 0}
+  #right{width:842px;height:720px;overflow:hidden}
+  .arrow{text-align:center;color:#8e95ab;font-size:13px}
+</style></head><body>
+<div id="root">
+  <div id="left">
+    <h2>1 · Your screen</h2>
+    <canvas id="screen" width="384" height="216"></canvas>
+    <div class="arrow">average colour → Bluetooth packet ↓</div>
+    <h2>2 · The light</h2>
+    <div id="lampbox">
+      <div id="lamp"></div>
+      <div id="hex">&nbsp;</div>
+    </div>
+    <div id="note">Demo: simulated screen and light.<br>Dashboard and sync engine are the real app.</div>
+  </div>
+  <div id="right"><iframe id="frame" src="/"></iframe></div>
+</div>
+<script>
+const KEYS=__KEYS__, STEP=__STEP__, HOLD=__HOLD__;
+const ease=x=>x*x*(3-2*x);
+function scene(t){
+  const n=KEYS.length; t=((t%(n*STEP))+n*STEP)%(n*STEP);
+  const i=Math.floor(t/STEP), ph=t-i*STEP, a=KEYS[i], b=KEYS[(i+1)%n];
+  const f=ph<HOLD?0:ease((ph-HOLD)/(STEP-HOLD));
+  const mix=(p,q)=>p.map((v,k)=>Math.round(v+(q[k]-v)*f));
+  return [mix(a[0],b[0]),mix(a[1],b[1])];
+}
+const cv=document.getElementById('screen'), cx=cv.getContext('2d');
+const lamp=document.getElementById('lamp'), hex=document.getElementById('hex');
+let st={t:0,packet:[]};
+function draw(){
+  const [top,bot]=scene(st.t);
+  const g=cx.createLinearGradient(0,0,0,cv.height);
+  g.addColorStop(0,`rgb(${top})`); g.addColorStop(1,`rgb(${bot})`);
+  cx.fillStyle=g; cx.fillRect(0,0,cv.width,cv.height);
+  const p=st.packet;
+  let c=[0,0,0];
+  if(p.length===9){
+    if(p[1]===7&&p[2]===5) c=[p[4],p[5],p[6]];
+    hex.textContent=p.map(b=>b.toString(16).padStart(2,'0')).join(' ').toUpperCase();
+  }
+  const lit=c[0]+c[1]+c[2]>0;
+  lamp.style.background=lit?`rgb(${c})`:'#14161f';
+  lamp.style.boxShadow=lit?`0 0 60px 20px rgba(${c},.55), 0 0 140px 50px rgba(${c},.25)`:'none';
+}
+async function poll(){
+  try{const r=await fetch('/demo/state');st=await r.json();}catch(e){}
+  draw();
+}
+setInterval(poll,40);
+</script></body></html>

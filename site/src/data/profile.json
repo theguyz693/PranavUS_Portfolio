@@ -1,0 +1,62 @@
+{
+  "name": "Pranav U S",
+  "location": "Bengaluru, India",
+  "email": "uspranav05@gmail.com",
+  "phone": "+91 70224 53335",
+  "links": {
+    "github": "https://github.com/theguyz693"
+  },
+  "linkedin": "https://www.linkedin.com/in/pranavus/",
+  "copy": {
+    "tagline": "Hi, I'm Pranav.",
+    "about": "I'm not an expert in any one thing. I put steady effort into a lot of things and keep going until they work. Some of what's here I built because I wanted to use it, and some came from team projects. It's an honest picture of what I've made so far, rough edges included."
+  },
+  "experience": [
+    {
+      "role": "AI & Web Development Intern",
+      "org": "Kaiburr",
+      "place": "Remote",
+      "from": "Jul 2025",
+      "to": "Oct 2025",
+      "points": [
+        "Built an OCR pipeline using PyMuPDF, Tesseract and EasyOCR to extract text from PDFs, images and scanned documents.",
+        "Developed a RAG-based document querying system using Haystack and OpenLLaMA.",
+        "Built a scalable document processing service supporting multiple file formats and OCR workflows."
+      ]
+    }
+  ],
+  "skills": {
+    "Languages": [
+      "Python",
+      "C++",
+      "Java",
+      "SQL"
+    ],
+    "Frameworks and libraries": [
+      "React",
+      "Node.js",
+      "Express.js",
+      "Scikit-learn",
+      "Hugging Face Transformers"
+    ],
+    "Databases": [
+      "MongoDB",
+      "MySQL"
+    ],
+    "Tools": [
+      "Git",
+      "GitHub",
+      "VS Code"
+    ],
+    "Concepts": [
+      "Machine Learning",
+      "NLP",
+      "LLMs",
+      "RAG",
+      "Explainable AI"
+    ]
+  },
+  "badge": "4th Year B.Tech CSE (AIML) Student",
+  "instagram": null,
+  "photo": null
+}

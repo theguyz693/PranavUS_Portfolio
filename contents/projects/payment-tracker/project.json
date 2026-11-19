@@ -1,0 +1,52 @@
+{
+  "slug": "payment-tracker",
+  "name": "Payment Tracker",
+  "pitch": "Personal finance tracker with a reliable, duplicate-proof payment event pipeline.",
+  "description": "A web app for tracking bills, recurring payments, money owed, cash flow, savings goals, loans and investments, with per-user data. Its Integrations Hub sends events from simulated payment and broker providers through a pipeline that records each payment exactly once, even with repeat deliveries, double clicks or crashes. Providers are simulators; no real bank, UPI or broker connections.",
+  "stack": [
+    "Next.js 15 (App Router, server actions)",
+    "React 19",
+    "TypeScript",
+    "MongoDB Atlas (multi-document transactions)",
+    "Better Auth",
+    "Zod",
+    "Tailwind CSS v4",
+    "Recharts",
+    "three.js / React Three Fiber",
+    "Vitest",
+    "Vercel (serverless + Cron)"
+  ],
+  "status": "finished",
+  "statusNote": "TODO: confirm status. Deployed and working; scheduled retry worker on the live site needs CRON_SECRET set in Vercel.",
+  "links": {
+    "repo": "https://github.com/theguyz693/payment_tracker",
+    "live": "https://paymenttracker-ashen.vercel.app",
+    "liveNote": "Sign-up required for the app itself.",
+    "video": "TODO: link to the uploaded demo video"
+  },
+  "glimpseType": "small interactive demo",
+  "glimpseFallback": "recorded screen loop",
+  "glimpseMedia": {
+    "loop": "media/demo-loop.webm",
+    "loopFallback": "media/demo-loop.mp4",
+    "poster": "media/poster.jpg",
+    "hero": "media/hero.png"
+  },
+  "hardestProblem": "Exactly-once payment processing on serverless without a message queue: idempotency keys with payload hashes and leases, a unique index per provider event, lease-based claiming with crash recovery, all-or-nothing transactional processing with audit, and business vs transient failure classification with exponential backoff.",
+  "results": [
+    "123 unit tests and 47 integration tests (real MongoDB) passing",
+    "Deployed and publicly reachable on Vercel",
+    "Scripted, narrated end-to-end demo video (8:17) against a test database",
+    "Simulated UPI event processed in about 60 ms in local testing (informal, single observation)",
+    "TODO: real usage data, if any",
+    "TODO: production p95 processing time from the monitoring page"
+  ],
+  "highlights": [
+    "Built and deployed a full-stack personal finance app with Next.js 15, React 19, TypeScript and MongoDB Atlas on Vercel, covering recurring payments, cash flow, goals, loans/EMIs, investments with FIFO lots and XIRR, and a cash-flow forecast.",
+    "Designed an exactly-once event pipeline on MongoDB without a message queue: a unique index per provider event, 30-second leases, transactional processing with an audit trail, exponential-backoff retries and crash recovery.",
+    "Implemented idempotency keys (payload hash + lease + TTL) for user actions, so a double-clicked 'Accept & pay' records one payment and the repeat replays the stored result.",
+    "Added an API protection layer: session checks on every server action, MongoDB-backed rate limits per user and action, HMAC-signed webhooks with a 5-minute replay window, Zod validation and structured logs with hashed user ids.",
+    "Wrote 123 unit tests and 47 integration tests against a real MongoDB replica set, covering duplicates, injected failures, crashes, concurrent sells and stale edits.",
+    "Built a monitoring dashboard (throughput, duplicates prevented, retries, average and p95 processing time, rate-limit rejections) from stored data, plus a scripted, narrated end-to-end demo video."
+  ]
+}

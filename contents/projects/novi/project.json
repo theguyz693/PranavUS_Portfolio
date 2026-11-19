@@ -1,0 +1,51 @@
+{
+  "slug": "novi",
+  "name": "Novi",
+  "pitch": "Local AI desktop agent for Windows: voice control, screen understanding, parallel workers.",
+  "description": "A voice assistant that lives on the Windows desktop as an animated pixel-art robot and carries out spoken requests on the PC: music, live weather and travel times, notes, PowerPoint decks, explaining anything snipped from the screen, and taught routines. All models run locally through Ollama.",
+  "stack": [
+    "Python",
+    "Ollama (qwen2.5:3b, qwen2.5vl:3b, llama3.2:1b, qwen2.5:7b)",
+    "faster-whisper",
+    "Windows UI Automation",
+    "pywin32",
+    "PowerPoint COM",
+    "Windows OCR (winocr)",
+    "Playwright",
+    "WinRT media controls",
+    "Tkinter",
+    "SQLite",
+    "pytest"
+  ],
+  "status": "in progress",
+  "links": {
+    "repo": "https://github.com/theguyz693/AI-Voice-Assistant",
+    "repoNote": "TODO: push the feature/agent-workers branch; the public repo currently shows only the original version.",
+    "live": null,
+    "liveNote": "Local Windows desktop app; no hosted version.",
+    "video": "TODO: link to the uploaded demo video"
+  },
+  "glimpseType": "recorded screen loop",
+  "glimpseMedia": {
+    "loop": "media/demo-loop.webm",
+    "loopFallback": "media/demo-loop.mp4",
+    "poster": "media/poster.jpg",
+    "hero": "media/hero.png"
+  },
+  "hardestProblem": "Getting a small local 3B model to drive a real desktop reliably and safely: deterministic fast paths for common intents, agent loop guards and completion nudges, UI Automation by control name, and document-state safety checks.",
+  "results": [
+    "63 offline unit tests passing",
+    "About 3x model throughput for 4 simultaneous calls after enabling Ollama parallelism (2.3 s vs 1.8 s for one call; informal measurement, RTX 3050 6 GB)",
+    "Two-city weather comparison with two parallel workers answered in 4-6 s (informal measurement)",
+    "Scripted self-recorded demo: 13 scenes, all successful in one take",
+    "TODO: success rate on a fixed task benchmark"
+  ],
+  "highlights": [
+    "Built a fully local Windows voice agent in Python (faster-whisper, Ollama with qwen2.5 3B models) that controls apps, media, PowerPoint and the browser from natural-language requests on a 6 GB laptop GPU.",
+    "Designed a coordinator that splits goals across up to 4 parallel workers, each with its own headless Playwright browser, with a shared screen lock for desktop actions; about 3x throughput for 4 simultaneous model calls after enabling Ollama parallelism.",
+    "Implemented snip-to-ask screen Q&A combining Windows OCR with a local vision model (qwen2.5vl), including follow-up questions.",
+    "Added persistent SQLite memory and teachable workflows (spoken instructions or recorded demonstration, replayed via UI Automation by control name) with an in-app editor.",
+    "Improved reliability of a small local model with deterministic fast paths, loop guards and document-safety checks, covered by 63 offline pytest tests.",
+    "Built an animated pixel-art desktop character, worker sprites and task panel in Tkinter on an event bus, plus a self-recording scripted demo."
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "slug": "lockout",
+  "name": "Lockout",
+  "pitch": "Chrome extension that blocks distracting sites and Shorts, with escalating lock-in levels.",
+  "description": "A Manifest V3 Chrome extension for staying focused. You pick a lock-in level and a timer and the sites on your list are blocked until it ends; the higher the level, the harder it is to quit. It hides YouTube Shorts without breaking the rest of YouTube, counts the Shorts and Reels you scroll, tracks time on entertainment sites, and keeps day streaks. All data stays in the browser: no server, no account, no tracking.",
+  "stack": [
+    "JavaScript (vanilla, no framework or build step)",
+    "HTML",
+    "CSS (CSS variables, three themes)",
+    "Chrome Extensions Manifest V3 (service worker, content scripts, storage, tabs, alarms, idle, scripting, activeTab, commands, optional host permissions)",
+    "Shadow DOM",
+    "Bundled OFL fonts (Geist, Geist Mono, Host Grotesk, IBM Plex Mono, Instrument Sans)",
+    "Python (Pillow, Playwright, ffmpeg via imageio-ffmpeg) for icons and the demo video",
+    "PowerShell (packaging script)"
+  ],
+  "status": "finished",
+  "statusNote": "Feature-complete at version 1.6.1. TODO: submit to the Chrome Web Store (needs a contact email in the privacy policy, a hosted policy URL and screenshots).",
+  "links": {
+    "repo": "https://github.com/theguyz693/Lockout",
+    "repoNote": "demo/lockout-demo.mp4 exists in the working copy but is not committed yet.",
+    "live": null,
+    "liveNote": "TODO: Chrome Web Store link once submitted and approved. Not published as far as I know.",
+    "video": "TODO: link to the uploaded demo video (local file: demo/lockout-demo.mp4)"
+  },
+  "glimpseType": "small interactive demo",
+  "glimpseMedia": {
+    "loop": "media/demo-loop.webm",
+    "loopFallback": "media/demo-loop.mp4",
+    "poster": "media/poster.jpg",
+    "hero": "media/hero.png"
+  },
+  "hardestProblem": "Making stateful features (time tracking, a floating counter, the block flow) reliable inside Manifest V3 and on hostile pages: persisting the tracked visit because the service worker can be killed, capping sleep gaps, serializing storage writes, rebuilding the counter without innerHTML for Trusted Types, and moving the permission request out of the popup. TODO: confirm the counter on live YouTube in real Chrome.",
+  "results": [
+    "Version 1.6.1, feature-complete, about 5,500 lines of JS, HTML and CSS",
+    "6 API permissions plus optional per-site host access; the first version asked for <all_urls> and webNavigation",
+    "No network requests of its own; all data in chrome.storage.local",
+    "Web Store assets written: icons, privacy policy, listing text, screenshot list, packaging script",
+    "Scripted 77-second 1080p demo video rendered from the real pages",
+    "Logic tests (levels, streaks, route matching, tracker, on-demand counter) passed at the last run. TODO: add the test scripts to the repo",
+    "TODO: installs, users or feedback (none yet)"
+  ],
+  "highlights": [
+    "Built a Manifest V3 Chrome extension in vanilla JavaScript (about 5,500 lines) that blocks distracting sites during timed focus sessions, with four lock-in levels that progressively raise the cost of quitting (wait timer, typed no-paste pledge, frozen blocklist, no early exit).",
+    "Implemented YouTube Shorts hiding and Shorts/Reels counting with a content script and CSS selectors, plus URL-path blocking for youtube.com/shorts and instagram.com/reels, so the rest of YouTube stays usable.",
+    "Engineered a service-worker-safe time tracker (alarms, focus and idle events, persisted visit state, capped sleep gaps, serialized storage writes) that totals daily time on listed sites with no backend.",
+    "Created a draggable, resizable floating counter in a closed Shadow DOM, built without innerHTML to satisfy Trusted Types, and summonable on any tab with Alt+Shift+L through activeTab, avoiding an all-sites permission.",
+    "Replaced blanket <all_urls> and webNavigation access with six API permissions plus optional per-site access requested at runtime; all data stays in chrome.storage.local with no network requests.",
+    "Designed three themes (Classic Dark, Classic Light, Industrial) on shared components with CSS variables and bundled open-source fonts; wrote Web Store assets and a scripted demo video rendered with Playwright and ffmpeg."
+  ]
+}
