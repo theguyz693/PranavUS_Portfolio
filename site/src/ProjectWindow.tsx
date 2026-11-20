@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { sfx } from './sfx'
 import { motion } from 'framer-motion'
 import { ProjectSite } from './ProjectSite'
 import { bySlug } from './content'
@@ -12,6 +13,7 @@ export default function ProjectWindow({ slug, base, reduced }: { slug: string; b
   const win = useRef<HTMLDivElement>(null)
 
   useEffect(() => { win.current?.focus() }, [])
+  useEffect(() => { sfx.play('whoosh'); return () => sfx.play('back') }, [])
   useEffect(() => { scroller.current?.scrollTo({ top: 0 }) }, [slug])
   if (!p) return null
 

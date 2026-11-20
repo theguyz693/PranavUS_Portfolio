@@ -6,6 +6,7 @@ import { profile } from './content'
 import { GithubIcon, InstagramIcon, LinkedinIcon, MailIcon, PhoneIcon } from './icons'
 import { randomFact } from './facts'
 import ReactiveBg from './ReactiveBg'
+import { sfx } from './sfx'
 import WorkGallery from './WorkGallery'
 import ResumeInline from './ResumeInline'
 
@@ -95,7 +96,7 @@ export default function SiteView({ reduced, noRoom = false }: { reduced: boolean
   const copyPhone = (e: React.MouseEvent) => {
     if (!hasMouse()) return
     e.preventDefault()
-    navigator.clipboard?.writeText(profile.phone).then(() => { setCopied(true); window.setTimeout(() => setCopied(false), 1800) }).catch(() => {})
+    navigator.clipboard?.writeText(profile.phone).then(() => { sfx.play('success'); setCopied(true); window.setTimeout(() => setCopied(false), 1800) }).catch(() => {})
   }
 
   // the hero is pinned for a while: the name rises and the details fade in line by line
@@ -258,7 +259,7 @@ export default function SiteView({ reduced, noRoom = false }: { reduced: boolean
         </Frame>
       </main>
 
-      <footer className="site-foot">PRANAV U S</footer>
+      <footer className="site-foot">PRANAV U S<span className="site-credit">3D: Dark Wood Book Shelf by Jeff Kratzer (G1ngerBoy) · Philips Radio by Lassi Kaukonen</span></footer>
       </div>
     </motion.div>
   )

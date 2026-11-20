@@ -7,6 +7,11 @@ import SiteView from './SiteView'
 import ResumeWindow from './ResumeWindow'
 import CustomCursor from './CustomCursor'
 import SoundToggle from './SoundToggle'
+import SfxLayer from './SfxLayer'
+import EggToast from './EggToast'
+import NoteCard from './NoteCard'
+import RadioTuner from './RadioTuner'
+import DeskWindow, { isDeskApp } from './DeskWindow'
 
 const Room = lazy(() => import('./Room'))
 
@@ -37,6 +42,9 @@ function Landing() {
   const fallback = !!mode && !mode.ok // phones and weak GPUs: the website without the 3D room
   const site = pathname.startsWith('/site') || fallback
   const resume = pathname === '/site/resume'
+  const deskPart = pathname.startsWith('/d/') ? pathname.split('/')[2] : undefined
+  const desk = isDeskApp(deskPart) ? deskPart : undefined
+  const deskHome = pathname === '/desk' // zoomed in on the monitor
   const valid = bySlug(slug)?.slug
   const [settled, setSettled] = useState(false)
 
@@ -51,12 +59,14 @@ function Landing() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       if (resume) nav('/site')
+      else if (desk) nav('/desk')
+      else if (deskHome) nav('/')
       else if (valid) nav(site ? '/site' : '/')
       else if (site) nav('/')
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [valid, site, resume, nav])
+  }, [valid, site, resume, desk, deskHome, nav])
 
   if (fallback) {
     const red = !!mode?.reduced
@@ -65,13 +75,17 @@ function Landing() {
         <SiteView reduced={red} noRoom />
         <CustomCursor />
         <SoundToggle mood="site" quiet={valid === 'vibeflow'} />
+        <SfxLayer />
+        <EggToast />
+        <NoteCard />
+        <RadioTuner />
         <AnimatePresence>{resume && <ResumeWindow key="resume" reduced={red} />}</AnimatePresence>
         <AnimatePresence>{valid && <ProjectWindow key="win" slug={valid} base="site" reduced={red} />}</AnimatePresence>
       </div>
     )
   }
 
-  const view = site ? 'monitor' : valid ? 'shelf' : 'home'
+  const view = site || desk || deskHome ? 'monitor' : valid ? 'shelf' : 'home'
   const reduced = !!mode?.reduced
   return (
     <div className="stage">
@@ -81,7 +95,7 @@ function Landing() {
         </Suspense>
       )}
       <AnimatePresence>
-        {!site && !valid && (
+        {!site && !valid && !desk && !deskHome && (
           <motion.div key="hero" className="overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <span className="mono">portfolio / {new Date().getFullYear()}</span>
             <h1 className="overlay-name">{profile.name}</h1>
@@ -96,6 +110,14 @@ function Landing() {
       </AnimatePresence>
       {site && mode && <CustomCursor />}
       {mode && <SoundToggle mood={site ? 'site' : 'room'} quiet={valid === 'vibeflow'} />}
+      {mode && <SfxLayer />}
+      {mode && <EggToast />}
+      {mode && <NoteCard />}
+      {mode && <RadioTuner />}
+      {deskHome && <Link className="desk-back mono" to="/">← Back to the room <kbd>esc</kbd></Link>}
+      <AnimatePresence>
+        {desk && mode && <DeskWindow key={desk} app={desk} reduced={reduced} />}
+      </AnimatePresence>
       <AnimatePresence>
         {resume && mode && <ResumeWindow key="resume" reduced={reduced} />}
       </AnimatePresence>
@@ -147,6 +169,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/p/:slug" element={<Landing />} />
+        <Route path="/desk" element={<Landing />} />
+        <Route path="/d/:app" element={<Landing />} />
         <Route path="/site" element={<Landing />} />
         <Route path="/site/resume" element={<Landing />} />
         <Route path="/site/p/:slug" element={<Landing />} />

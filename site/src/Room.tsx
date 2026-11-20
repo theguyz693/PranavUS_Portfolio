@@ -1,11 +1,18 @@
 import { Suspense, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Html, useGLTF } from '@react-three/drei'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import * as THREE from 'three'
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import { roomProjects as projects } from './content'
 import { istNow, skyAt } from './daylight'
+import { fx, toggleLamp } from './fxState'
+import { sfx } from './sfx'
+import { found } from './eggs'
+import { nextNote } from './notes'
+import { radio, useRadio } from './radio'
+import RoomFx from './RoomFx'
+import WindowLife, { Steam } from './WindowLife'
 
 const ACCENT = '#ffb454'
 export type RoomView = 'home' | 'monitor' | 'shelf'
@@ -16,6 +23,8 @@ const M = {
   keyboard: '/models/keyboard.glb',
   mug: '/models/nescafe.glb',
   lamp: '/models/lamp.glb',
+  bookshelf: '/models/book_shelf.glb',
+  radio: '/models/radio.glb',
   binders: '/models/binders.glb',
   room: '/models/room.glb',
   alarm: '/models/alarmclock.glb',
@@ -105,6 +114,8 @@ function AlarmClock({ position, rotation }: { position: [number, number, number]
     return { canvas, tex }
   }, [fit])
 
+  const clockOn = useRef(true)
+  const redraw = useRef<() => void>(() => {})
   useEffect(() => {
     const draw = () => {
       const { h, m, s } = istNow()
@@ -112,6 +123,7 @@ function AlarmClock({ position, rotation }: { position: [number, number, number]
       const colon = s % 2 === 0 ? ':' : ' '
       const g = canvas.getContext('2d')!
       g.fillStyle = '#0a0c0e'; g.fillRect(0, 0, canvas.width, canvas.height)
+      if (!clockOn.current) { tex.needsUpdate = true; invalidate(); return } // switched off: a dark screen
       g.fillStyle = '#e9f2ff'; g.textAlign = 'center'; g.textBaseline = 'middle'
       g.font = `700 ${Math.round(canvas.height * 0.62)}px ui-monospace, "Courier New", monospace`
       g.fillText(`${String(h12).padStart(2, '0')}${colon}${String(m).padStart(2, '0')}`, canvas.width * 0.46, canvas.height * 0.52)
@@ -123,13 +135,19 @@ function AlarmClock({ position, rotation }: { position: [number, number, number]
       invalidate()
     }
     draw()
+    redraw.current = draw
     const id = window.setInterval(draw, 1000)
     return () => clearInterval(id)
   }, [canvas, tex, invalidate])
 
   const { c, w, h, front } = fit.screen
   return (
-    <group position={position} rotation={rotation}>
+    <group
+      position={position} rotation={rotation}
+      onClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; clockOn.current = !clockOn.current; sfx.play(clockOn.current ? 'pop' : 'off'); found('clock'); redraw.current() }}
+      onPointerOver={() => { document.body.style.cursor = 'pointer' }}
+      onPointerOut={() => { document.body.style.cursor = '' }}
+    >
       <group position={fit.offset} scale={fit.s}><primitive object={fit.root} /></group>
       <mesh position={[c.x, c.y, front + 0.0015]}>
         <planeGeometry args={[w * 0.96, h * 0.96]} />
@@ -144,12 +162,14 @@ const CUP_SPOTS: [number, number][] = [
   [1.2, 0.3], [1.45, 0.05], [1.05, 0.45], [1.6, 0.4], [1.15, 0.0],
   [-0.9, 0.35], [-0.7, 0.5], [-1.05, 0.15],
 ]
-function Cup({ deskTop }: { deskTop: number }) {
+function Cup({ deskTop, motion }: { deskTop: number; motion: boolean }) {
   const gltf = useGLTF(M.mug)
   const fit = useMemo(() => fitObject(gltf.scene.clone(true), { h: 0.18 }), [gltf])
   const group = useRef<THREE.Group>(null)
   const move = useRef({ from: new THREE.Vector2(1.2, 0.3), to: new THREE.Vector2(1.2, 0.3), t: 1, spin: -0.6, spinTo: -0.6, spot: 0 })
   const invalidate = useThree((s) => s.invalidate)
+  const steamAt = useRef(0) // when the mug was last clicked
+  const clickTimer = useRef(0)
 
   const hop = () => {
     const m = move.current
@@ -179,9 +199,16 @@ function Cup({ deskTop }: { deskTop: number }) {
     <group
       ref={group}
       position={[1.2, deskTop, 0.3]}
-      onDoubleClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; hop() }}
+      onClick={(e) => {
+        // one click: a puff of steam. The short wait lets a double-click through to the hop instead.
+        e.stopPropagation(); if (e.delta > 6) return
+        clearTimeout(clickTimer.current)
+        clickTimer.current = window.setTimeout(() => { steamAt.current = performance.now(); sfx.play('swish', 0.4); found('steam'); invalidate() }, 260)
+      }}
+      onDoubleClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; clearTimeout(clickTimer.current); sfx.play('pop'); found('mug'); hop() }}
     >
       <group position={fit.offset} scale={fit.s}><primitive object={fit.root} /></group>
+      <Steam motion={motion} at={steamAt} />
     </group>
   )
 }
@@ -272,7 +299,7 @@ function ToyBox({ position }: { position: [number, number, number] }) {
         rotation={[0, 0.35, 0]}
         onPointerOver={(e) => { e.stopPropagation(); setHot(true); document.body.style.cursor = 'pointer' }}
         onPointerOut={() => { setHot(false); document.body.style.cursor = '' }}
-        onClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; shake.current = 1; setOpen((o) => !o) }}
+        onClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; shake.current = 1; sfx.play('thunk'); found('toybox'); setOpen((o) => !o) }}
       >
         <group position={fit.offset} scale={fit.s}><primitive object={fit.root} /></group>
         {hot && (
@@ -286,17 +313,6 @@ function ToyBox({ position }: { position: [number, number, number] }) {
       <pointLight position={[0.6, 0.5, 1.0]} intensity={open ? 4 : 0} distance={3} color="#ffe9d0" decay={2} />
       {TOYS.map((t, i) => <Toy key={t.url} def={t} index={i} open={open} boxTop={fit.dims.h} />)}
     </group>
-  )
-}
-
-function Box({ args, position, color = '#1a1b1f', rough = 0.9 }: {
-  args: [number, number, number]; position: [number, number, number]; color?: string; rough?: number
-}) {
-  return (
-    <mesh position={position}>
-      <boxGeometry args={args} />
-      <meshStandardMaterial color={color} roughness={rough} />
-    </mesh>
   )
 }
 
@@ -322,15 +338,74 @@ function RoomShell({ windowMat }: { windowMat: THREE.Material }) {
 const SHELF_X = [-3.05]
 const SHELF_SLOTS = 9
 const slot = (i: number) => ({ unit: 0, row: Math.floor(i / 3), col: i % 3 })
-function ShelfUnit({ x, rows }: { x: number; rows: number }) {
-  const H = 0.14 + rows * 0.82
+/**
+ * The bookcase (Dark Wood Book Shelf by Jeff Kratzer / G1ngerBoy). Four open compartments: the upper three hold the
+ * binders, the bottom one is left free for display pieces. BOARD_Y are the tops of the boards the binders stand on.
+ */
+const SHELF_SCALE = 1.2
+const BOARD_Y = [0.612, 1.135, 1.657].map((z) => z * SHELF_SCALE) // measured from the model; lowest first
+function BookShelf({ x }: { x: number }) {
+  const gltf = useGLTF(M.bookshelf)
+  const fit = useMemo(() => {
+    return fitObject(gltf.scene.clone(true), { h: 2.239 * SHELF_SCALE }) // the optimised file already stands upright
+  }, [gltf])
+  return <group position={[x, 0, -1.05]}><group position={fit.offset} scale={fit.s}><primitive object={fit.root} /></group></group>
+}
+/** The radio (Philips Radio by Lassi Kaukonen). Click: on or off, and the tuning dial appears. Double-click: next station. */
+function Radio({ position, rotation }: { position: [number, number, number]; rotation: [number, number, number] }) {
+  const gltf = useGLTF(M.radio)
+  const fit = useMemo(() => fitObject(gltf.scene.clone(true), { w: 0.5 }), [gltf])
+  const timer = useRef(0)
+  const { on } = useRadio()
+  const [hot, setHot] = useState(false)
   return (
-    <>
-      <Box args={[1.55, H, 0.04]} position={[x, H / 2, -1.3]} color="#16171a" />
-      <Box args={[0.05, H, 0.55]} position={[x - 0.77, H / 2, -1.05]} color="#1c1d21" />
-      <Box args={[0.05, H, 0.55]} position={[x + 0.77, H / 2, -1.05]} color="#1c1d21" />
-      {Array.from({ length: rows }, (_, k) => <Box key={k} args={[1.6, 0.04, 0.55]} position={[x, 0.76 + k * 0.82, -1.05]} color="#1c1d21" />)}
-    </>
+    <group
+      position={position} rotation={rotation}
+      onClick={(e) => {
+        e.stopPropagation(); if (e.delta > 6) return
+        clearTimeout(timer.current)
+        // the short wait lets a double-click through, which changes station instead
+        timer.current = window.setTimeout(() => { sfx.play('switch'); found('radio'); void radio.power(!radio.getState().on) }, 260)
+      }}
+      onDoubleClick={(e) => {
+        e.stopPropagation(); if (e.delta > 6) return
+        clearTimeout(timer.current)
+        found('radio')
+        if (!radio.getState().on) void radio.power(true).then(() => radio.next(1)); else radio.next(1)
+      }}
+      onPointerOver={(e) => { e.stopPropagation(); setHot(true); document.body.style.cursor = 'pointer' }}
+      onPointerOut={() => { setHot(false); document.body.style.cursor = '' }}
+    >
+      <group position={fit.offset} scale={fit.s}><primitive object={fit.root} /></group>
+      <pointLight position={[0, fit.dims.h * 0.55, fit.dims.d * 0.6]} intensity={on ? 0.4 : hot ? 0.1 : 0} distance={0.9} color="#c97a3c" decay={2} />
+    </group>
+  )
+}
+
+/** A sheet of paper on the floor of the shelf's bottom compartment. Click it and it shows a line of text. */
+function ShelfNote({ x }: { x: number }) {
+  const [hot, setHot] = useState(false)
+  const tex = useMemo(() => {
+    const c = document.createElement('canvas')
+    c.width = 256; c.height = 180
+    const g = c.getContext('2d')!
+    g.fillStyle = '#e8e1d0'; g.fillRect(0, 0, 256, 180)
+    g.strokeStyle = 'rgba(70,60,45,0.35)'; g.lineWidth = 3; g.lineCap = 'round'
+    for (let i = 0; i < 6; i++) { g.beginPath(); g.moveTo(26, 34 + i * 22); g.lineTo(26 + 150 + ((i * 37) % 60), 34 + i * 22 + ((i % 2) * 2)); g.stroke() }
+    const t = new THREE.CanvasTexture(c)
+    t.colorSpace = THREE.SRGBColorSpace
+    return t
+  }, [])
+  return (
+    <mesh
+      position={[x + 0.42, 0.075 * SHELF_SCALE + 0.006, -1.0]} rotation={[-Math.PI / 2, 0, 0.35]}
+      onClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; sfx.play('paper'); found('note'); window.dispatchEvent(new CustomEvent('note:toggle', { detail: nextNote() })) }}
+      onPointerOver={(e) => { e.stopPropagation(); setHot(true); document.body.style.cursor = 'pointer' }}
+      onPointerOut={() => { setHot(false); document.body.style.cursor = '' }}
+    >
+      <planeGeometry args={[0.34, 0.24]} />
+      <meshStandardMaterial map={tex} roughness={0.95} emissive="#fff3d2" emissiveIntensity={hot ? 0.35 : 0.08} />
+    </mesh>
   )
 }
 /** Warm light from the side of the room so the binders read clearly. */
@@ -364,7 +439,7 @@ function Folder({ index, position, active, anyActive }: { index: number; positio
     node.position.set(0, 0, 0)
     // own material per binder: clones share materials, so a hover glow would otherwise bleed to the rest of the column
     node.traverse((o) => { const m = o as THREE.Mesh; if (m.isMesh) m.material = (m.material as THREE.Material).clone() })
-    return fitObject(node, { h: 0.7 + (index % 3) * 0.04 })
+    return fitObject(node, { h: 0.48 + (index % 3) * 0.03 })
   }, [gltf, index])
   const { w: t, h, d } = fit.dims
   const glow = hot || active
@@ -411,7 +486,7 @@ function Folder({ index, position, active, anyActive }: { index: number; positio
       position={position}
       onPointerOver={(e) => { e.stopPropagation(); set(true) }}
       onPointerOut={() => set(false)}
-      onClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; if (!active) nav(`/p/${p.slug}`) }}
+      onClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; if (!active) { sfx.play('paper'); nav(`/p/${p.slug}`) } }}
     >
       <group position={fit.offset} scale={fit.s}><primitive object={fit.root} /></group>
       <mesh position={[0, h * 0.68, d / 2 + 0.004]}>
@@ -443,7 +518,64 @@ const rr = (g: CanvasRenderingContext2D, x: number, y: number, w: number, h: num
 }
 
 /** A small stylised desktop: dusk wallpaper, menu bar, a portfolio window and a dock. */
-function drawDesktop(g: CanvasRenderingContext2D, W: number, H: number, hot: boolean, active: boolean) {
+/** Desktop icons on the monitor. Positions are fractions of the screen; the order is top to bottom. */
+const DESK_ICONS = [
+  { id: 'projects', label: 'Projects', tint: '#d8b878' },
+  { id: 'about', label: 'About', tint: '#7fb0d6' },
+  { id: 'resume', label: 'Resume', tint: '#8cc7a1' },
+  { id: 'contact', label: 'Contact', tint: '#d98a7a' },
+  { id: 'games', label: 'Games', tint: '#b79ad8' },
+] as const
+const iconBox = (i: number, W: number, H: number) => {
+  const s = H * 0.092
+  return { x: W * 0.04, y: H * (0.1 + i * 0.16), s }
+}
+/** Which icon is under this point of the screen (0..1 each way, origin top-left), or -1. */
+const iconAt = (u: number, v: number) => {
+  const W = 1024, H = 512
+  for (let i = 0; i < DESK_ICONS.length; i++) {
+    const b = iconBox(i, W, H)
+    if (u * W >= b.x - 10 && u * W <= b.x + b.s + 10 && v * H >= b.y - 6 && v * H <= b.y + b.s + H * 0.075) return i
+  }
+  return -1
+}
+function drawIcons(g: CanvasRenderingContext2D, W: number, H: number, hover: number) {
+  DESK_ICONS.forEach((ic, i) => {
+    const { x, y, s } = iconBox(i, W, H)
+    const on = hover === i
+    const lift = on ? -4 : 0
+    g.save(); g.shadowColor = 'rgba(0,0,0,0.45)'; g.shadowBlur = on ? 22 : 12; g.shadowOffsetY = on ? 10 : 5
+    g.fillStyle = on ? ic.tint : 'rgba(18,22,32,0.82)'
+    rr(g, x, y + lift, s, s, s * 0.24); g.fill(); g.restore()
+    g.strokeStyle = on ? '#0b0c0e' : ic.tint; g.fillStyle = g.strokeStyle; g.lineWidth = s * 0.055; g.lineCap = 'round'; g.lineJoin = 'round'
+    const cx = x + s / 2, cy = y + lift + s / 2, u = s * 0.26
+    g.beginPath()
+    if (ic.id === 'projects') { // folder
+      g.moveTo(cx - u * 1.2, cy - u * 0.6); g.lineTo(cx - u * 0.3, cy - u * 0.6); g.lineTo(cx + u * 0.1, cy - u * 0.2); g.lineTo(cx + u * 1.2, cy - u * 0.2)
+      g.lineTo(cx + u * 1.2, cy + u * 0.9); g.lineTo(cx - u * 1.2, cy + u * 0.9); g.closePath(); g.stroke()
+    } else if (ic.id === 'about') { // person
+      g.arc(cx, cy - u * 0.5, u * 0.5, 0, Math.PI * 2); g.stroke()
+      g.beginPath(); g.arc(cx, cy + u * 1.25, u * 1.05, Math.PI * 1.1, Math.PI * 1.9); g.stroke()
+    } else if (ic.id === 'resume') { // page with lines
+      rr(g, cx - u * 0.85, cy - u * 1.1, u * 1.7, u * 2.2, 4); g.stroke()
+      for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(cx - u * 0.45, cy - u * 0.45 + k * u * 0.55); g.lineTo(cx + u * 0.45, cy - u * 0.45 + k * u * 0.55); g.stroke() }
+    } else if (ic.id === 'games') { // gamepad
+      rr(g, cx - u * 1.35, cy - u * 0.65, u * 2.7, u * 1.4, u * 0.6); g.stroke()
+      g.beginPath(); g.moveTo(cx - u * 0.8, cy - u * 0.2); g.lineTo(cx - u * 0.8, cy + u * 0.4); g.moveTo(cx - u * 1.1, cy + u * 0.1); g.lineTo(cx - u * 0.5, cy + u * 0.1); g.stroke()
+      g.beginPath(); g.arc(cx + u * 0.6, cy + u * 0.15, u * 0.12, 0, 7); g.arc(cx + u * 0.95, cy - u * 0.1, u * 0.12, 0, 7); g.fill()
+    } else { // envelope
+      rr(g, cx - u * 1.2, cy - u * 0.8, u * 2.4, u * 1.6, 4); g.stroke()
+      g.beginPath(); g.moveTo(cx - u * 1.2, cy - u * 0.8); g.lineTo(cx, cy + u * 0.15); g.lineTo(cx + u * 1.2, cy - u * 0.8); g.stroke()
+    }
+    g.fillStyle = '#f2efe8'; g.textAlign = 'center'; g.textBaseline = 'middle'
+    g.font = `600 ${H * 0.034}px "DM Sans", "Geist", system-ui, sans-serif`
+    g.shadowColor = 'rgba(0,0,0,0.7)'; g.shadowBlur = 6
+    g.fillText(ic.label, cx, y + s + H * 0.036)
+    g.shadowBlur = 0
+  })
+}
+
+function drawDesktop(g: CanvasRenderingContext2D, W: number, H: number, hot: boolean, active: boolean, hoverIcon = -1) {
   // wallpaper
   const sky = g.createLinearGradient(0, 0, 0, H)
   sky.addColorStop(0, '#1a2640'); sky.addColorStop(0.55, '#394a6c'); sky.addColorStop(1, '#bf8a6c')
@@ -489,8 +621,10 @@ function drawDesktop(g: CanvasRenderingContext2D, W: number, H: number, hot: boo
     g.fillStyle = c; rr(g, dx + dw * (0.055 + i * 0.152), dy + dh * 0.17, dh * 0.66, dh * 0.66, 10); g.fill()
   })
 
+  drawIcons(g, W, H, hoverIcon)
+
   // hover: highlight the window and offer to open it
-  if (hot && !active) {
+  if (hot && !active && hoverIcon < 0) {
     g.strokeStyle = '#d8b878'; g.lineWidth = 5; rr(g, wx, wy, ww, wh, 16); g.stroke()
     const px = W * 0.5, py = H * 0.8, pw = W * 0.34, ph = H * 0.085
     g.fillStyle = '#d8b878'; rr(g, px - pw / 2, py - ph / 2, pw, ph, ph / 2); g.fill()
@@ -502,8 +636,20 @@ function drawDesktop(g: CanvasRenderingContext2D, W: number, H: number, hot: boo
 
 function Monitor({ active, position }: { active: boolean; position: [number, number, number] }) {
   const nav = useNavigate()
+  const zoomed = useLocation().pathname === '/desk' // zoomed in on the screen and ready to use
+  const glass = useRef<THREE.Mesh>(null)
+  const corner = useMemo(() => new THREE.Vector3(), [])
+  useFrame(({ camera, size }) => {
+    const m = glass.current
+    if (!m) return
+    if (!active) { fx.screen = null; return }
+    const px = (lx: number, ly: number) => { corner.set(lx, ly, 0); m.localToWorld(corner); corner.project(camera); return [(corner.x * 0.5 + 0.5) * size.width, (-corner.y * 0.5 + 0.5) * size.height] }
+    const [x0, y0] = px(-0.719, 0.357), [x1, y1] = px(0.719, -0.357)
+    fx.screen = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 }
+  })
   const invalidate = useThree((s) => s.invalidate)
   const [hot, setHot] = useState(false)
+  const [icon, setIcon] = useState(-1)
   const [minute, setMinute] = useState(0)
   useEffect(() => { const id = window.setInterval(() => setMinute((n) => n + 1), 15000); return () => clearInterval(id) }, []) // keeps the menu-bar clock current
 
@@ -517,20 +663,28 @@ function Monitor({ active, position }: { active: boolean; position: [number, num
     return { canvas, tex }
   }, [])
   useEffect(() => {
-    drawDesktop(canvas.getContext('2d')!, canvas.width, canvas.height, hot, active)
+    drawDesktop(canvas.getContext('2d')!, canvas.width, canvas.height, hot, active && !zoomed, icon)
     tex.needsUpdate = true
     invalidate()
-  }, [hot, active, minute, canvas, tex, invalidate])
+  }, [hot, active, zoomed, icon, minute, canvas, tex, invalidate])
 
   return (
     <Fitted url={M.monitor} target={{ w: 1.5 }} position={position}>
       {() => (
         // glowing screen laid over the model's black glass; also the click target
         <mesh
+          ref={glass}
           position={[0, 0.676, 0.1415]}
           onPointerOver={(e) => { e.stopPropagation(); setHot(true); document.body.style.cursor = 'pointer' }}
-          onPointerOut={() => { setHot(false); document.body.style.cursor = '' }}
-          onClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; nav('/site') }}
+          onPointerMove={(e) => { if (e.uv) { const i = iconAt(e.uv.x, 1 - e.uv.y); setIcon((prev) => { if (i >= 0 && i !== prev) sfx.play('tick'); return i }) } }}
+          onPointerOut={() => { setHot(false); setIcon(-1); document.body.style.cursor = '' }}
+          onClick={(e) => {
+            e.stopPropagation(); if (e.delta > 6) return
+            if (!active) { sfx.play('whoosh'); nav('/desk'); return } // first click: the camera moves in on the screen
+            const i = e.uv ? iconAt(e.uv.x, 1 - e.uv.y) : -1
+            sfx.play(i >= 0 ? 'pop' : 'confirm')
+            nav(i >= 0 ? `/d/${DESK_ICONS[i].id}` : '/site')
+          }}
         >
           <planeGeometry args={[1.438, 0.714]} />
           <meshBasicMaterial map={tex} toneMapped={false} />
@@ -551,12 +705,23 @@ function Daylight({ windowMat }: { windowMat: THREE.MeshBasicMaterial }) {
   const orb = useRef<THREE.Mesh>(null)
   const orbMat = useRef<THREE.MeshBasicMaterial>(null)
   const last = useRef(0)
+  const lampBase = useRef(0)
+
+  // the lamp can be switched by clicking it, flickers when idle, and dims for disco
+  const setLamp = () => {
+    let v = lampBase.current
+    if (fx.lamp === 'off') v = 0
+    else if (fx.lamp === 'on') v = Math.max(v, 7)
+    fx.effective = v
+    if (lamp.current) lamp.current.intensity = v * fx.flick * (fx.disco ? 0.25 : 1)
+  }
 
   const apply = () => {
     const st = skyAt(istNow().hours)
-    if (amb.current) { amb.current.color.copy(st.ambient); amb.current.intensity = st.ambientIntensity }
+    if (amb.current) { amb.current.color.copy(st.ambient); amb.current.intensity = st.ambientIntensity * (fx.disco ? 0.3 : 1) }
     if (win.current) { win.current.color.copy(st.windowLight); win.current.intensity = st.windowIntensity }
-    if (lamp.current) lamp.current.intensity = st.lampIntensity
+    lampBase.current = st.lampIntensity
+    setLamp()
     windowMat.color.copy(st.sky)
     if (scene.background instanceof THREE.Color) scene.background.copy(st.bg)
     if (scene.fog) scene.fog.color.copy(st.bg)
@@ -576,6 +741,7 @@ function Daylight({ windowMat }: { windowMat: THREE.MeshBasicMaterial }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frameloop])
   useFrame(() => {
+    setLamp()
     const now = performance.now()
     if (now - last.current < 1000) return
     last.current = now
@@ -699,7 +865,7 @@ function Scene({ drift, activeSlug, view }: { drift: boolean; activeSlug?: strin
     const { unit, row, col } = slot(i)
     folders.push(
       <Folder key={i} index={i} active={projects[i].slug === activeSlug} anyActive={!!activeSlug}
-        position={[SHELF_X[unit] - 0.3 + col * 0.42 + (row % 2) * 0.03, 0.8 + row * 0.82, -1.05]} />,
+        position={[SHELF_X[unit] + (col - 1) * 0.5 + (row % 2) * 0.03, BOARD_Y[row] + 0.012, -1.05]} />,
     )
   })
 
@@ -717,13 +883,27 @@ function Scene({ drift, activeSlug, view }: { drift: boolean; activeSlug?: strin
       <Fitted url={M.table} target={{ w: 3.4 }} position={[0.4, 0, 0.1]} />
       <Monitor active={view === 'monitor'} position={[0.3, deskTop, -0.2]} />
       <Fitted url={M.keyboard} target={{ w: 0.75 }} position={[0.3, deskTop, 0.42]} />
-      <Cup deskTop={deskTop} />
+      <Cup deskTop={deskTop} motion={drift} />
+      <WindowLife motion={drift} />
       {/* under the window, out of the first view: found by looking around */}
       <ToyBox position={[-4.1, 0, 3.05]} />
       <AlarmClock position={[-0.75, deskTop, -0.3]} rotation={[0, 0.2, 0]} />
       <Fitted url={M.lamp} target={{ h: 0.6 }} position={[1.9, deskTop, -0.1]} />
+      {/* an invisible box around the lamp: click it to switch it on or off */}
+      <mesh
+        position={[1.9, deskTop + 0.3, -0.1]}
+        onClick={(e) => { e.stopPropagation(); if (e.delta > 6) return; sfx.play('switch'); toggleLamp(); found('lamp') }}
+        onPointerOver={() => { document.body.style.cursor = 'pointer' }}
+        onPointerOut={() => { document.body.style.cursor = '' }}
+      >
+        <boxGeometry args={[0.42, 0.66, 0.42]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
+      <RoomFx motion={drift} />
 
-      <ShelfUnit x={SHELF_X[0]} rows={3} />
+      <BookShelf x={SHELF_X[0]} />
+      <ShelfNote x={SHELF_X[0]} />
+      <Radio position={[SHELF_X[0] - 0.34, 0.075 * SHELF_SCALE + 0.012, -1.0]} rotation={[0, 0.14, 0]} />
       {folders}
     </>
   )

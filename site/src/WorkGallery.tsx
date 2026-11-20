@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, useMotionValueEvent, useScroll, useTransform } from 'framer-motion'
 import { projects, type Project } from './content'
+import { sfx } from './sfx'
 
 // Projects without a clip get a slow colour field instead. Warm and teal hues; no purples.
 const HUES: Record<string, [number, number]> = {
@@ -116,6 +117,7 @@ export default function WorkGallery({ scroller, reduced }: { scroller: React.Ref
       </section>
     )
   }
+  useEffect(() => { sfx.play('swoosh') }, [active])
   const cur = projects[active]
   return (
     <section id="work" ref={track} className="wk" style={{ height: `calc(100vh + ${(n - 1) * VH_PER}vh)` }} aria-labelledby="work-h">

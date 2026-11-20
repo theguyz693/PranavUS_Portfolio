@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { sfx } from './sfx'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ReceiptPrinter, type ReceiptPrinterStage } from './ReceiptPrinter'
 import ResumePaper from './ResumePaper'
@@ -12,12 +13,13 @@ export default function ResumeWindow({ reduced }: { reduced: boolean }) {
   const [run, setRun] = useState(0)
 
   useEffect(() => { win.current?.focus() }, [])
+  useEffect(() => { sfx.play('whoosh'); return () => sfx.play('back') }, [])
   // processing -> printing -> complete (no waiting when motion is reduced)
   useEffect(() => {
     if (reduce) { setStage('complete'); return }
     setStage('processing')
-    const t1 = window.setTimeout(() => setStage('printing'), 1100)
-    const t2 = window.setTimeout(() => setStage('complete'), 1100 + 1900)
+    const t1 = window.setTimeout(() => { setStage('printing'); sfx.play('print') }, 1100)
+    const t2 = window.setTimeout(() => { setStage('complete'); sfx.play('ding') }, 1100 + 1900)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [run, reduce])
 

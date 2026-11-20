@@ -92,3 +92,30 @@ if (existsSync(profilePath)) {
 }
 const pdf = join(src, '..', 'resume.pdf')
 if (existsSync(pdf)) { copyFileSync(pdf, join(root, 'public', 'resume.pdf')); console.log('synced resume.pdf') }
+
+// Party-mode tracks: any .mp3 / .m4a in ../music is copied to public/music and listed in src/data/music.json
+{
+  const musicDir = join(root, '..', 'music')
+  const out = join(root, 'public', 'music')
+  const list = []
+  if (existsSync(musicDir)) {
+    mkdirSync(out, { recursive: true })
+    const audio = readdirSync(musicDir).filter((f) => /\.(mp3|m4a|mp4|ogg|wav)$/i.test(f)).sort()
+    // files whose name says swoosh are interface sounds, not party music
+    const fxFiles = audio.filter((f) => /swoosh/i.test(f))
+    const sfxOut = join(root, 'public', 'sfx')
+    const sfxMap = {}
+    if (fxFiles.length) mkdirSync(sfxOut, { recursive: true })
+    fxFiles.forEach((f) => { const ext = f.slice(f.lastIndexOf('.')).toLowerCase(); copyFileSync(join(musicDir, f), join(sfxOut, `swoosh${ext}`)); sfxMap.swoosh = `/sfx/swoosh${ext}` })
+    writeFileSync(join(root, 'src', 'data', 'sfxfiles.json'), JSON.stringify(sfxMap, null, 2))
+    audio.filter((f) => !fxFiles.includes(f) && /\.(mp3|m4a|mp4|ogg)$/i.test(f)).forEach((f, i) => {
+      const ext = f.slice(f.lastIndexOf('.')).toLowerCase()
+      const name = `party-${i + 1}${ext === '.mp4' ? '.m4a' : ext}` // an audio-only .mp4 is an m4a
+      copyFileSync(join(musicDir, f), join(out, name))
+      list.push(`/music/${name}`)
+    })
+  }
+  writeFileSync(join(root, 'src', 'data', 'music.json'), JSON.stringify(list, null, 2))
+  if (!existsSync(join(root, 'src', 'data', 'sfxfiles.json'))) writeFileSync(join(root, 'src', 'data', 'sfxfiles.json'), '{}')
+  console.log(`synced ${list.length} party tracks`)
+}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
+import { sfx } from './sfx'
 import { ReceiptPrinter, type ReceiptPrinterStage } from './ReceiptPrinter'
 import ResumePaper from './ResumePaper'
 
@@ -17,8 +18,8 @@ export default function ResumeInline({ request, onRequest }: { request: number; 
     setStarted(true)
     if (reduce) { setStage('complete'); return }
     setStage('processing')
-    const t1 = window.setTimeout(() => setStage('printing'), 1100)
-    const t2 = window.setTimeout(() => setStage('complete'), 3000)
+    const t1 = window.setTimeout(() => { setStage('printing'); sfx.play('print') }, 1100)
+    const t2 = window.setTimeout(() => { setStage('complete'); sfx.play('ding') }, 3000)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [request, reduce])
 

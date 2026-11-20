@@ -1,5 +1,6 @@
 import data from './data/projects.json'
 import profileData from './data/profile.json'
+import musicData from './data/music.json'
 
 export type Media = { loop: string[]; poster: string | null; hero: string | null; full: string | null }
 export type Project = Omit<(typeof data)[number], 'media'> & { media: Media }
@@ -17,3 +18,6 @@ export const SHOW_GAPS = import.meta.env.DEV // TODO markers only visible in dev
 export const bySlug = (slug?: string) => projects.find((p) => p.slug === slug)
 
 export const profile = profileData as typeof profileData & { linkedin?: string | null }
+
+/** Tracks for party mode (the .mp3 files in the music folder). */
+export const partyTracks = musicData as string[]
