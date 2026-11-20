@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Light Reaction ad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;width:1920px;height:1200px;background:#090909;overflow:hidden}
+  #cam{position:absolute;left:0;top:0;width:1920px;height:1200px;transform-origin:0 0;background:#090909}
+  #room{position:absolute;left:0;top:0;width:960px;height:1200px;overflow:hidden;background:#0c0d12;--cv:255,120,40}
+  #room svg{position:absolute;left:0;top:0}
+  .glow{position:absolute;pointer-events:none;mix-blend-mode:screen}
+  #g1{left:0;top:0;width:960px;height:800px;background:radial-gradient(ellipse 62% 56% at 50% 42%,rgba(var(--cv),.62) 0%,rgba(var(--cv),.22) 48%,rgba(var(--cv),0) 82%)}
+  #g2{left:60px;top:790px;width:840px;height:380px;background:radial-gradient(ellipse 50% 50% at 50% 38%,rgba(var(--cv),.42) 0%,rgba(var(--cv),0) 80%)}
+  #g4{left:0;top:120px;width:960px;height:700px;background:radial-gradient(circle 360px at 480px 340px,rgba(var(--cv),.55) 0%,rgba(var(--cv),0) 100%)}
+  #roomScreen{position:absolute;left:292px;top:342px;width:376px;height:225px;border-radius:4px}
+  #divider{position:absolute;left:960px;top:0;width:1px;height:1200px;background:rgba(255,255,255,.07)}
+  #mon{position:absolute;left:996px;top:40px;width:888px;height:500px;border-radius:20px;overflow:hidden;background:#000;box-sizing:border-box;border:10px solid #17181f;box-shadow:0 0 90px rgba(var(--mv),.35)}
+  #scene{position:absolute;left:0;top:0;width:868px;height:480px}
+  #flash{position:absolute;inset:0;background:#fff;opacity:0}
+  #appwrap{position:absolute;left:996px;top:572px;width:888px;height:588px;border-radius:20px;overflow:hidden;background:#090a0f;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+  #ifr{position:absolute;left:0;top:0;width:1100px;height:1500px;border:0;transform-origin:0 0}
+  #cursor{position:absolute;left:0;top:0;width:64px;height:64px;opacity:0;pointer-events:none;z-index:50;filter:drop-shadow(0 4px 8px rgba(0,0,0,.6))}
+  #ripple{position:absolute;left:0;top:0;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;border:5px solid #e9e3d8;opacity:0;pointer-events:none;z-index:49}
+  #vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0) 52%,rgba(0,0,0,.62) 100%)}
+  #scrim{position:absolute;left:0;top:0;width:1920px;height:340px;pointer-events:none;background:linear-gradient(180deg,rgba(9,9,9,.78),rgba(9,9,9,0))}
+  #cap{position:absolute;left:64px;top:46px;font-family:'Anton',Impact,sans-serif;font-size:116px;line-height:1.05;letter-spacing:.02em;color:#e9e3d8;text-transform:uppercase;opacity:0;white-space:nowrap}
+  #end{position:absolute;inset:0;background:rgba(9,9,9,.82);opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px}
+  #end .t{font-family:'Anton',Impact,sans-serif;font-size:230px;letter-spacing:.04em;color:#e9e3d8;line-height:1}
+  #end .l{height:5px;width:300px;background:#d8b878;border-radius:3px}
+</style></head><body>
+<div id="cam">
+  <div id="room">
+    <svg id="roomsvg" width="960" height="1200" viewBox="0 0 960 1200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="floorG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1820"/><stop offset="1" stop-color="#09090c"/></linearGradient>
+        <filter id="b18" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="18"/></filter>
+        <filter id="b6" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+      </defs>
+      <g id="L0">
+        <rect x="0" y="0" width="960" height="790" fill="#151620"/>
+        <rect x="0" y="560" width="960" height="230" fill="#11121a"/>
+        <rect x="0" y="558" width="960" height="3" fill="#1f2130"/>
+        <rect x="0" y="776" width="960" height="14" fill="#0a0a0f"/>
+        <rect x="0" y="790" width="960" height="410" fill="url(#floorG)"/>
+        <g stroke="#ffffff" stroke-opacity=".035"><line x1="0" y1="850" x2="960" y2="850"/><line x1="0" y1="930" x2="960" y2="930"/><line x1="0" y1="1030" x2="960" y2="1030"/><line x1="0" y1="1140" x2="960" y2="1140"/></g>
+      </g>
+      <g id="L1">
+        <!-- wall art, left -->
+        <g style="stroke:rgba(var(--cv),.55)" stroke-width="3">
+          <rect x="84" y="150" width="150" height="210" rx="4" fill="#0d0e14"/>
+          <rect x="258" y="190" width="110" height="140" rx="4" fill="#0d0e14"/>
+        </g>
+        <circle cx="159" cy="235" r="34" fill="#1d1f2c"/><rect x="104" y="290" width="110" height="10" rx="5" fill="#1d1f2c"/><rect x="104" y="312" width="70" height="10" rx="5" fill="#181a25"/>
+        <path d="M268 300 L300 236 L330 280 L350 252 L360 300Z" fill="#1d1f2c"/>
+        <!-- shelf + plant, right -->
+        <rect x="716" y="300" width="190" height="12" rx="3" fill="#20222f"/>
+        <rect x="730" y="236" width="14" height="64" fill="#2a2d3d"/><rect x="746" y="248" width="12" height="52" fill="#1a1c28"/><rect x="760" y="230" width="16" height="70" fill="#262938"/>
+        <rect x="800" y="262" width="50" height="38" rx="4" fill="#1a1c28"/>
+        <path d="M868 300 L862 270 L896 270 L890 300Z" fill="#242736"/>
+        <g fill="#1f3a30"><ellipse cx="878" cy="252" rx="9" ry="24" transform="rotate(-18 878 252)"/><ellipse cx="886" cy="250" rx="9" ry="26" transform="rotate(14 886 250)"/><ellipse cx="880" cy="246" rx="8" ry="22"/></g>
+        <!-- LED strip frame behind monitor -->
+        <rect id="stripBlur" x="252" y="304" width="456" height="311" rx="16" fill="none" stroke-width="22" filter="url(#b18)" style="stroke:rgb(var(--cv))"/>
+        <rect id="stripCore" x="252" y="304" width="456" height="311" rx="16" fill="none" stroke-width="5" style="stroke:rgb(var(--cv))"/>
+        <!-- desk -->
+        <rect x="130" y="640" width="700" height="26" rx="5" fill="#222433"/>
+        <rect x="150" y="666" width="18" height="130" fill="#171925"/><rect x="792" y="666" width="18" height="130" fill="#171925"/>
+        <rect x="640" y="666" width="150" height="116" fill="#1a1c28"/><rect x="654" y="682" width="122" height="38" rx="3" fill="#141621"/><rect x="654" y="730" width="122" height="38" rx="3" fill="#141621"/>
+        <rect x="130" y="637" width="700" height="4" rx="2" style="fill:rgba(var(--cv),.75)"/>
+        <!-- monitor -->
+        <rect x="468" y="592" width="24" height="50" fill="#0f1017"/><rect x="424" y="632" width="112" height="10" rx="4" fill="#0f1017"/>
+        <rect x="280" y="330" width="400" height="265" rx="12" fill="#06060a"/>
+        <rect x="360" y="618" width="240" height="12" rx="4" fill="#12131c"/>
+        <rect x="690" y="600" width="26" height="38" rx="5" fill="#191b27"/>
+      </g>
+      <g id="L2">
+        <!-- rug -->
+        <ellipse cx="480" cy="1040" rx="390" ry="104" fill="#171822"/><ellipse cx="480" cy="1040" rx="330" ry="80" fill="none" stroke="#242636" stroke-width="3"/>
+        <!-- chair -->
+        <g style="stroke:rgba(var(--cv),.5)" stroke-width="3" fill="#0b0b11">
+          <rect x="400" y="820" width="160" height="180" rx="34"/>
+          <rect x="418" y="990" width="124" height="22" rx="10"/>
+          <rect x="472" y="1010" width="16" height="70" fill="#0b0b11"/>
+        </g>
+        <!-- floor plant -->
+        <path d="M70 1010 L58 1130 L158 1130 L146 1010Z" fill="#14151e" style="stroke:rgba(var(--cv),.45)" stroke-width="3"/>
+        <g fill="#14281f" style="stroke:rgba(var(--cv),.4)" stroke-width="2">
+          <ellipse cx="86" cy="930" rx="20" ry="86" transform="rotate(-26 86 930)"/>
+          <ellipse cx="108" cy="905" rx="22" ry="100"/>
+          <ellipse cx="132" cy="932" rx="20" ry="86" transform="rotate(26 132 932)"/>
+        </g>
+      </g>
+    </svg>
+    <canvas id="roomScreen" width="376" height="225"></canvas>
+    <div id="g1" class="glow"></div><div id="g4" class="glow"></div><div id="g2" class="glow"></div>
+  </div>
+  <div id="divider"></div>
+  <div id="mon"><canvas id="scene" width="868" height="480"></canvas><div id="flash"></div></div>
+  <div id="appwrap"><iframe id="ifr" src="/"></iframe></div>
+  <svg id="cursor" viewBox="0 0 64 64"><path d="M10 6 L10 50 L21 40 L29 58 L37 54 L29 37 L44 37Z" fill="#fff" stroke="#111" stroke-width="3.5" stroke-linejoin="round"/></svg>
+  <div id="ripple"></div>
+</div>
+<div id="vignette"></div>
+<div id="scrim"></div>
+<div id="cap"></div>
+<div id="end"><div class="t">LIGHT REACTION</div><div class="l"></div></div>
+
+<script>
+const DUR = 12, SAMPLE_HZ = 8, THRESH = 12, TWEEN = 0.18;
+const $ = (id) => document.getElementById(id);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const sm = (x) => { x = Math.min(1, Math.max(0, x)); return x * x * x * (x * (x * 6 - 15) + 10); };
+const lerp = (a, b, u) => a + (b - a) * u;
+const hex2rgb = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+
+/* ---------- scenes (all periodic in t with period DUR so frame 12 == frame 0) ---------- */
+const SCENES = [[0, 0], [2.9, 1], [4.0, 2], [5.1, 3], [9.3, 4], [11.2, 0]];
+const sceneAt = (t) => { let id = 0; for (const [ts, s] of SCENES) if (t >= ts) id = s; return id; };
+const ph = (t) => (t / DUR) * Math.PI * 2;
+
+function grad(c, w, h, y0, y1, stops) {
+  const g = c.createLinearGradient(0, y0 * h, 0, y1 * h);
+  stops.forEach(([o, col]) => g.addColorStop(o, col));
+  c.fillStyle = g;
+}
+function disc(c, w, h, x, y, r, col) { c.fillStyle = col; c.beginPath(); c.arc(x * w, y * h, r * h, 0, 7); c.fill(); }
+function poly(c, w, h, pts, col) { c.fillStyle = col; c.beginPath(); pts.forEach(([x, y], i) => i ? c.lineTo(x * w, y * h) : c.moveTo(x * w, y * h)); c.closePath(); c.fill(); }
+
+function drawScene(c, w, h, id, t) {
+  const s = Math.sin(ph(t)), s2 = Math.sin(ph(t) * 2);
+  c.clearRect(0, 0, w, h);
+  if (id === 0) { // sunset
+    grad(c, w, h, 0, .62, [[0, '#ff6a2a'], [.6, '#ff9a48'], [1, '#ffd27a']]); c.fillRect(0, 0, w, h * .62);
+    disc(c, w, h, .5 + .02 * s, .58, .17, '#fff0c0');
+    grad(c, w, h, .62, 1, [[0, '#d9583a'], [1, '#5a1c3e']]); c.fillRect(0, h * .62, w, h * .38);
+    c.fillStyle = 'rgba(255,230,170,.55)'; for (let i = 0; i < 6; i++) c.fillRect(w * (.5 - .12 + i * .01 + .01 * s2), h * (.64 + i * .05), w * (.24 - i * .03), h * .012);
+    poly(c, w, h, [[.7, .62], [.82, .5], [.92, .56], [1, .52], [1, .66], [.7, .66]], '#7a2a3a');
+  } else if (id === 1) { // moonlit ocean
+    grad(c, w, h, 0, .55, [[0, '#2a86f0'], [1, '#0f4aa8']]); c.fillRect(0, 0, w, h * .55);
+    disc(c, w, h, .72 + .015 * s, .24, .1, '#eaf4ff');
+    c.fillStyle = 'rgba(255,255,255,.7)'; [[.2, .1], [.35, .22], [.5, .08], [.12, .3]].forEach(([x, y]) => c.fillRect(x * w, y * h, 3, 3));
+    grad(c, w, h, .55, 1, [[0, '#1566c8'], [1, '#08306e']]); c.fillRect(0, h * .55, w, h * .45);
+    c.fillStyle = 'rgba(210,235,255,.55)'; for (let i = 0; i < 9; i++) c.fillRect(w * (.1 + (i * .097 + .02 * s2) % .8), h * (.6 + (i % 5) * .07), w * .12, h * .01);
+  } else if (id === 2) { // neon city
+    grad(c, w, h, 0, 1, [[0, '#ff3aa0'], [.55, '#a52ae0'], [1, '#3a0d7a']]); c.fillRect(0, 0, w, h);
+    disc(c, w, h, .5, .4 + .01 * s, .22, '#ffc2ee');
+    c.fillStyle = '#8a1fc7'; for (let i = 0; i < 5; i++) c.fillRect(w * .3, h * (.36 + i * .05), w * .4, h * .01 * (i + 1));
+    const bs = [[.0, .55], [.08, .45], [.18, .6], [.27, .4], [.38, .52], [.5, .36], [.6, .58], [.7, .44], [.8, .62], [.9, .48]];
+    bs.forEach(([x, top]) => { c.fillStyle = '#1b0a35'; c.fillRect(x * w, top * h, w * .1, h * (1 - top)); c.fillStyle = 'rgba(80,240,255,.8)'; for (let r = 0; r < 6; r++) for (let q = 0; q < 2; q++) if ((r + q + Math.round(x * 10)) % 2 == 0) c.fillRect(x * w + w * (.02 + q * .045), (top + .05 + r * .06) * h, w * .02, h * .02); });
+  } else if (id === 3) { // forest
+    grad(c, w, h, 0, .7, [[0, '#8cf0b0'], [1, '#34c070']]); c.fillRect(0, 0, w, h);
+    disc(c, w, h, .22 + .02 * s, .22, .08, '#f4ffd8');
+    poly(c, w, h, [[0, .7], [.2, .5], [.4, .66], [.62, .46], [.85, .62], [1, .5], [1, 1], [0, 1]], '#26a060');
+    poly(c, w, h, [[0, .85], [.25, .66], [.5, .8], [.75, .64], [1, .78], [1, 1], [0, 1]], '#128048');
+    for (let i = 0; i < 9; i++) { const x = .06 + i * .11; poly(c, w, h, [[x, .95], [x + .035, .72 + (i % 3) * .03], [x + .07, .95]], '#0a5a34'); }
+    c.fillStyle = 'rgba(255,255,220,.18)'; for (let i = 0; i < 4; i++) poly(c, w, h, [[.2 + i * .15, 0], [.26 + i * .15, 0], [.1 + i * .15 + .02 * s, .8], [.04 + i * .15, .8]], 'rgba(255,255,220,.14)');
+  } else { // ice / aurora
+    grad(c, w, h, 0, 1, [[0, '#0b2c52'], [.55, '#27b8d0'], [1, '#bff3f6']]); c.fillRect(0, 0, w, h);
+    ['rgba(120,255,200,.55)', 'rgba(110,200,255,.5)', 'rgba(190,140,255,.45)'].forEach((col, i) => { c.fillStyle = col; c.beginPath(); c.moveTo(0, h * (.18 + i * .1)); for (let x = 0; x <= w; x += w / 24) c.lineTo(x, h * (.18 + i * .1 + .06 * Math.sin(x / w * 7 + i + ph(t)))); c.lineTo(w, h * (.5 + i * .1)); c.lineTo(0, h * (.5 + i * .1)); c.fill(); });
+    poly(c, w, h, [[0, .85], [.18, .52], [.34, .8], [.55, .46], [.78, .78], [.92, .6], [1, .78], [1, 1], [0, 1]], '#e8fbff');
+    poly(c, w, h, [[0, 1], [.25, .82], [.5, .95], [.8, .84], [1, .94], [1, 1]], '#a7dfe8');
+  }
+}
+
+/* ---------- timeline data ---------- */
+const SYNC_RANGES = [[0, 6.7], [9.3, DUR + 1]];
+const inSync = (t) => SYNC_RANGES.some(([a, b]) => t >= a && t < b);
+const CLICKS = [
+  { t: 6.7, sel: '#mode-manual-btn', key: 'manual', color: [0, 240, 255] },
+  { t: 7.4, sel: '.preset-btn[data-color="#D500F9"]', key: 'purple', color: hex2rgb('#D500F9') },
+  { t: 8.1, sel: '.preset-btn[data-color="#FFB74D"]', key: 'warm', color: hex2rgb('#FFB74D') },
+  { t: 8.75, sel: '.preset-btn[data-color="#00F0FF"]', key: 'cyan', color: hex2rgb('#00F0FF') },
+  { t: 9.3, sel: '#mode-sync-btn', key: 'sync', color: null },
+];
+const CAPS = [
+  { text: 'Your screen.', a: [11.6, 12.0], b: [1.7, 2.1], full: [0, 1.7] },
+  { text: 'Your room.', a: [2.0, 2.3], b: [3.4, 3.7] },
+  { text: 'Every scene.', a: [3.8, 4.1], b: [5.8, 6.1] },
+  { text: 'Or pick a mood.', a: [6.5, 6.8], b: [9.0, 9.25] },
+  { text: 'In sync.', a: [9.45, 9.7], b: [10.1, 10.35] },
+];
+const CAM = [
+  [0, 960, 600, 1.0], [2.9, 990, 590, 1.10], [4.2, 1160, 470, 1.22], [6.2, 1180, 640, 1.28],
+  [6.9, 1220, 780, 1.22], [9.2, 1200, 780, 1.22], [9.9, 960, 600, 1.05], [10.4, 960, 600, 1.0], [12, 960, 600, 1.0],
+];
+function interp(keys, t) {
+  if (t <= keys[0][0]) return keys[0].slice(1);
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (t <= keys[i + 1][0]) {
+      const u = sm((t - keys[i][0]) / (keys[i + 1][0] - keys[i][0]));
+      return keys[i].slice(1).map((v, j) => lerp(v, keys[i + 1][j + 1], u));
+    }
+  }
+  return keys[keys.length - 1].slice(1);
+}
+
+let ifr, M = {}, S_SCALE = 888 / 1100, P1 = 0, raw = [], lampEv = [], fired = 0, lastK = -1;
+
+function buildSamples() {
+  const oc = document.createElement('canvas'); oc.width = 96; oc.height = 54;
+  const c = oc.getContext('2d', { willReadFrequently: true });
+  const n = DUR * SAMPLE_HZ + 1;
+  for (let k = 0; k < n; k++) {
+    const t = k / SAMPLE_HZ;
+    drawScene(c, 96, 54, sceneAt(t), t);
+    const d = c.getImageData(0, 0, 96, 54).data; let r = 0, g = 0, b = 0;
+    for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; }
+    const m = d.length / 4; raw.push([Math.round(r / m), Math.round(g / m), Math.round(b / m)]);
+  }
+  // same gating logic as the app: send only if the colour moved >= threshold since last sent
+  let sent = null;
+  for (let k = 0; k < n; k++) {
+    const t = k / SAMPLE_HZ;
+    if (!inSync(t)) { sent = null; continue; }
+    const c2 = raw[k];
+    if (!sent || Math.abs(c2[0] - sent[0]) + Math.abs(c2[1] - sent[1]) + Math.abs(c2[2] - sent[2]) >= THRESH) { sent = c2; lampEv.push({ t, c: c2 }); }
+  }
+  CLICKS.forEach((cl) => { if (cl.color) lampEv.push({ t: cl.t, c: cl.color }); });
+  lampEv.sort((a, b) => a.t - b.t);
+  if (lampEv[0].t > 0) lampEv.unshift({ t: 0, c: raw[0] });
+}
+function lampAt(t) {
+  let i = 0; while (i + 1 < lampEv.length && lampEv[i + 1].t <= t) i++;
+  const cur = lampEv[i].c, prev = i > 0 ? lampEv[i - 1].c : cur;
+  const u = sm((t - lampEv[i].t) / TWEEN);
+  return cur.map((v, j) => Math.round(lerp(prev[j], v, u)));
+}
+
+const panAt = (t) => {
+  if (t < 6.75) return 0; if (t < 7.25) return P1 * sm((t - 6.75) / .5);
+  if (t < 9.5) return P1; if (t < 10.0) return P1 * (1 - sm((t - 9.5) / .5)); return 0;
+};
+const stagePos = (key, pan) => {
+  const m = M[key];
+  return [996 + m.cx * S_SCALE, 572 + (m.cy - pan) * S_SCALE];
+};
+
+async function initAd() {
+  await document.fonts.load('100px Anton'); await document.fonts.ready;
+  ifr = $('ifr');
+  await new Promise((res) => { if (ifr.contentDocument && ifr.contentDocument.readyState === 'complete' && ifr.contentDocument.querySelector('#mode-sync-btn')) res(); else ifr.addEventListener('load', res); });
+  await sleep(300);
+  await ifr.contentDocument.fonts.ready;
+  ifr.style.transform = `translate(0px,0px) scale(${S_SCALE})`;
+  const d = ifr.contentDocument;
+  const rect = (sel) => { const r = d.querySelector(sel).getBoundingClientRect(); return { cx: r.left + r.width / 2, cy: r.top + r.height / 2, top: r.top, bottom: r.bottom }; };
+  d.querySelector('#mode-manual-btn').click(); await sleep(150);
+  CLICKS.forEach((c) => { M[c.key] = rect(c.sel); });
+  d.querySelector('#mode-sync-btn').click(); await sleep(150);
+  const winCss = 588 / S_SCALE;
+  P1 = Math.max(0, Math.min(M.purple.bottom + 60 - winCss, M.manual.top - 40));
+  buildSamples();
+  d.defaultView.__S.color = raw[0];
+  window.__ready = { P1, M, winCss, lamp0: lampEv[0] };
+  return window.__ready;
+}
+
+async function seek(t) {
+  t = Math.min(Math.max(t, 0), DUR);
+  // 1. fire real UI clicks in the embedded dashboard
+  while (fired < CLICKS.length && t >= CLICKS[fired].t) { ifr.contentDocument.querySelector(CLICKS[fired].sel).click(); fired++; }
+  // 2. scene + monitor flash on cuts
+  const id = sceneAt(t);
+  drawScene($('scene').getContext('2d'), 868, 480, id, t);
+  const rs = $('roomScreen').getContext('2d'); rs.drawImage($('scene'), 0, 0, 376, 225);
+  let cutAge = 9; for (const [ts] of SCENES) if (ts > 0 && t >= ts) cutAge = Math.min(cutAge, t - ts);
+  $('flash').style.opacity = cutAge < .14 ? .38 * (1 - cutAge / .14) : 0;
+  // 3. lamp colour -> room + monitor glow
+  const lc = lampAt(t);
+  $('room').style.setProperty('--cv', lc.join(','));
+  const raw_k = raw[Math.min(raw.length - 1, Math.floor(t * SAMPLE_HZ))];
+  $('mon').style.setProperty('--mv', raw_k.join(','));
+  // 4. push screen colour to dashboard at the app's sample rate (sync mode only)
+  const k = Math.floor(t * SAMPLE_HZ);
+  if (inSync(t) && k !== lastK) {
+    const w = ifr.contentWindow; w.__S.color = raw[k];
+    w.__push({ type: 'color_update', color: raw[k], mode: 'sync', connected: true, active_monitor_id: 1, active_monitor_desc: 'Display 1 — 1920x1080' });
+  }
+  lastK = k;
+  // 5. dashboard pan
+  const pan = panAt(t);
+  ifr.style.transform = `translate(0px,${-pan * S_SCALE}px) scale(${S_SCALE})`;
+  // 6. camera (+ small punch on scene cuts)
+  let [fx, fy, kz] = interp(CAM, t);
+  const punch = cutAge < .28 ? .03 * Math.pow(1 - cutAge / .28, 2) : 0;
+  kz *= 1 + punch;
+  const tx = 960 - fx * kz, ty = 600 - fy * kz;
+  $('cam').style.transform = `translate(${tx}px,${ty}px) scale(${kz})`;
+  const pxo = (tx - 0) ;
+  $('roomsvg').querySelector('#L1').setAttribute('transform', `translate(${(-pxo * 0.02).toFixed(2)},0)`);
+  $('roomsvg').querySelector('#L2').setAttribute('transform', `translate(${(pxo * 0.045).toFixed(2)},0)`);
+  // 7. cursor + ripple (stage coordinates, lives inside the camera)
+  const cur = $('cursor'), rip = $('ripple');
+  const wps = [{ t: 5.9, p: [1760, 330] }];
+  CLICKS.forEach((c) => wps.push({ t: c.t, p: stagePos(c.key, panAt(c.t)) }));
+  wps.push({ t: 9.95, p: [1790, 640] });
+  let pos = wps[0].p;
+  for (let i = 0; i < wps.length - 1; i++) {
+    if (t >= wps[i].t && t <= wps[i + 1].t) { const u = sm((t - wps[i].t) / (wps[i + 1].t - wps[i].t)); pos = [lerp(wps[i].p[0], wps[i + 1].p[0], u), lerp(wps[i].p[1], wps[i + 1].p[1], u)]; }
+  }
+  if (t > wps[wps.length - 1].t) pos = wps[wps.length - 1].p;
+  let ca = 0; if (t >= 5.9 && t < 6.2) ca = sm((t - 5.9) / .3); else if (t >= 6.2 && t < 9.6) ca = 1; else if (t >= 9.6 && t < 9.95) ca = 1 - sm((t - 9.6) / .35);
+  let press = 1, ra = 0, rs2 = 0, rp = pos;
+  for (const c of CLICKS) {
+    const a = t - c.t;
+    if (a >= -0.05 && a < 0.1) press = .86;
+    if (a >= 0 && a < .55) { const u = a / .55; ra = .85 * (1 - u); rs2 = 1 + 4.5 * sm(u); rp = stagePos(c.key, panAt(c.t)); }
+  }
+  cur.style.opacity = ca;
+  cur.style.transform = `translate(${pos[0] - 10 * 1}px,${pos[1] - 6}px) scale(${press})`;
+  rip.style.opacity = ra; rip.style.left = rp[0] + 'px'; rip.style.top = rp[1] + 'px'; rip.style.transform = `scale(${rs2})`;
+  // 8. captions
+  let cap = null, co = 0, slide = 0;
+  for (const c of CAPS) {
+    let a = 0;
+    if (c.full && t >= c.full[0] && t < c.full[1]) a = 1;
+    else if (t >= c.a[0] && t < c.b[0]) a = sm((t - c.a[0]) / (c.a[1] - c.a[0])) * (c.a[1] >= c.b[0] ? 1 : 1);
+    if (t >= c.b[0] && t <= c.b[1]) a = 1 - sm((t - c.b[0]) / (c.b[1] - c.b[0]));
+    if (c.a[0] > 11 && t >= c.a[0]) a = sm((t - c.a[0]) / (c.a[1] - c.a[0]));
+    if (a > co) { co = a; cap = c; slide = (1 - a) * 28 * (t >= c.b[0] && t < 11 ? -1 : 1); }
+  }
+  const capEl = $('cap'); if (cap) capEl.textContent = cap.text; capEl.style.opacity = co; capEl.style.transform = `translateY(${slide}px)`;
+  // 9. end card
+  let ea = 0; if (t >= 10.4 && t < 10.9) ea = sm((t - 10.4) / .5); else if (t >= 10.9 && t < 11.3) ea = 1; else if (t >= 11.3 && t < 11.8) ea = 1 - sm((t - 11.3) / .5);
+  $('end').style.opacity = ea;
+  await sleep(6);
+  return { t, lamp: lc, scene: id, pan, cam: [fx, fy, kz] };
+}
+</script></body></html>

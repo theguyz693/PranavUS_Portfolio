@@ -14,3 +14,7 @@ contents/projects/political-bias-detection/*.docx
 contents/projects/political-bias-detection/*.pptx
 .claude/
 exports/
+# video-making work files (raw frames and screen captures), not needed by the site
+contents/projects/novi/hype/work/
+contents/projects/cadence/hype-video/assets/
+contents/projects/vibeflow/media/previous-v1/

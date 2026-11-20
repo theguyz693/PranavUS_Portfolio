@@ -10,10 +10,12 @@ const isTodo = (s) => typeof s === 'string' && /^\s*TODO/i.test(s)
 const pub = join(root, 'public', 'media')
 const MEDIA = { loopWebm: 'demo-loop.webm', loopMp4: 'demo-loop.mp4', poster: ['poster.jpg', 'poster.png'], hero: ['hero.png', 'hero.jpg', 'hero.gif'], full: ['full-demo.mp4'] }
 function syncMedia(slug) {
-  const dir = join(src, slug, 'media')
+  // newer hype/ad cuts live in media/hype or media/ad and win over the files directly in media/
+  const dirs = ['hype', 'ad', ''].map((d) => join(src, slug, 'media', d))
   const out = { loop: [], poster: null, hero: null, full: null }
   const take = (name) => {
-    if (!existsSync(join(dir, name))) return null
+    const dir = dirs.find((d) => existsSync(join(d, name)))
+    if (!dir) return null
     mkdirSync(join(pub, slug), { recursive: true })
     copyFileSync(join(dir, name), join(pub, slug, name))
     return `/media/${slug}/${name}`

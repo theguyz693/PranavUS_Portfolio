@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Lockout ad</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="../content/shortform.css">
+<style>
+  @font-face { font-family: 'Anton'; src: url('fonts/anton-latin-400-normal.woff2') format('woff2'); font-display: block; }
+  :root { --cream: #e9e3d8; --ink: #090909; --gold: #d8b878; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1200px; overflow: hidden; background: #090909; }
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1200px; overflow: hidden; background: #090909; }
+  .abs { position: absolute; }
+  .scene { position: absolute; left: 0; top: 0; width: 1920px; height: 1200px; opacity: 0; will-change: opacity; }
+
+  /* ---------- background ---------- */
+  .glow { position: absolute; border-radius: 50%; filter: blur(40px); }
+  #glowA { width: 1100px; height: 1100px; left: -300px; top: -400px; background: radial-gradient(circle, rgba(74,222,128,.13), transparent 62%); }
+  #glowB { width: 1000px; height: 1000px; right: -300px; bottom: -400px; background: radial-gradient(circle, rgba(216,184,120,.11), transparent 62%); }
+
+  /* ---------- scene 1: mock video home page (real shortform.css hides the shelf) ---------- */
+  #cam1 { position: absolute; left: 0; top: 0; width: 1920px; height: 1200px; transform-origin: 0 0; }
+  #win { position: absolute; left: 80px; top: 50px; width: 1760px; height: 1100px; border-radius: 20px; background: #0f0f0f; overflow: hidden;
+    box-shadow: 0 0 0 1px #2a2a2c, 0 60px 160px rgba(0,0,0,.8); }
+  #bar { height: 64px; background: #1c1c1e; display: flex; align-items: center; gap: 18px; padding: 0 22px; }
+  .dots i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: #3a3a3c; margin-right: 9px; }
+  #urlpill { flex: 1; max-width: 760px; margin: 0 auto; height: 38px; border-radius: 19px; background: #2c2c2e; }
+  #tool { display: flex; gap: 14px; align-items: center; }
+  #tool img { width: 34px; height: 34px; border-radius: 8px; }
+  #tool b { width: 34px; height: 34px; border-radius: 8px; background: #2c2c2e; }
+  #page { position: relative; height: 1036px; overflow: hidden; background: #0f0f0f; color: #f1f1f1; font-family: Arial, Helvetica, sans-serif; }
+  #phead { height: 64px; display: flex; align-items: center; gap: 28px; padding: 0 28px; border-bottom: 1px solid #272727; }
+  #phead .brand { font-weight: 700; font-size: 26px; letter-spacing: -.5px; width: 192px; }
+  #phead .search { flex: 1; max-width: 700px; margin: 0 auto; height: 40px; border: 1px solid #303030; border-radius: 20px; padding: 10px 20px; color: #7a7a7a; font-size: 16px; }
+  #phead .av { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #8e2de2, #4a00e0); }
+  #pbody { display: flex; }
+  #side { width: 220px; padding: 14px 10px; }
+  ytd-guide-entry-renderer { display: block; padding: 13px 18px; border-radius: 12px; font-size: 17px; }
+  ytd-guide-entry-renderer a { color: inherit; text-decoration: none; }
+  ytd-guide-entry-renderer.on { background: #272727; }
+  #main { flex: 1; padding: 18px 28px; }
+  #chips { display: flex; gap: 12px; margin-bottom: 22px; }
+  #chips span { padding: 9px 18px; border-radius: 10px; background: #272727; font-size: 15px; }
+  #chips span.on { background: #f1f1f1; color: #0f0f0f; }
+  #grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px 20px; }
+  ytd-rich-item-renderer { display: block; }
+  .thumb { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; }
+  .thumb::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 78% 22%, rgba(255,255,255,.22), transparent 38%), radial-gradient(circle at 15% 90%, rgba(0,0,0,.35), transparent 55%); }
+  .thumb .dur { position: absolute; right: 8px; bottom: 8px; z-index: 2; padding: 2px 6px; border-radius: 5px; background: rgba(0,0,0,.8); font-size: 13px; font-weight: 600; }
+  .meta { display: flex; gap: 12px; margin-top: 12px; }
+  .meta .ch { flex: none; width: 36px; height: 36px; border-radius: 50%; }
+  .meta .t { font-size: 17px; font-weight: 600; line-height: 1.25; }
+  .meta .c { margin-top: 4px; font-size: 14px; color: #a0a0a0; }
+  ytd-reel-shelf-renderer { display: block; grid-column: 1 / -1; padding: 4px 0 8px; }
+  ytd-reel-shelf-renderer h3 { font-size: 26px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+  ytd-reel-shelf-renderer h3 i { width: 26px; height: 26px; border-radius: 7px; background: #ff3b3b; display: inline-block; }
+  .reels { display: flex; gap: 16px; }
+  .reel { position: relative; flex: 1; height: 372px; border-radius: 16px; overflow: hidden; display: flex; align-items: flex-end; padding: 16px; font-size: 18px; font-weight: 700; line-height: 1.15; }
+  .reel::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,.14), transparent 35%, rgba(0,0,0,.55)); }
+  .reel span { position: relative; z-index: 2; }
+  #scrim1 { position: absolute; left: 0; bottom: 0; width: 1920px; height: 640px; background: linear-gradient(0deg, rgba(9,9,9,.92), rgba(9,9,9,.55) 45%, transparent); pointer-events: none; }
+
+  /* ---------- badge + sweep ---------- */
+  #badge { position: absolute; left: 50%; top: 56px; margin-left: -230px; width: 460px; height: 84px; border-radius: 42px; display: flex; align-items: center; gap: 18px; padding: 0 30px 0 18px;
+    background: rgba(14,14,14,.94); border: 1px solid #303030; box-shadow: 0 20px 60px rgba(0,0,0,.6); opacity: 0; font: 500 24px 'Modern Dark Mono', monospace; letter-spacing: 2px; color: #e9e3d8; }
+  #badge img { width: 50px; height: 50px; border-radius: 13px; }
+  #badge .dot { margin-left: auto; width: 14px; height: 14px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 22px #4ade80; }
+  #sweep { position: absolute; left: -600px; top: -100px; width: 520px; height: 1500px; transform: rotate(18deg); opacity: 0;
+    background: linear-gradient(90deg, transparent, rgba(233,227,216,.20), transparent); }
+
+  /* ---------- scene 2: real popup ---------- */
+  #popWrapOuter { position: absolute; left: 1030px; top: 40px; width: 510px; height: 1120px; transform-origin: 50% 42%; }
+  #pop { position: absolute; inset: 0; border-radius: 24px; overflow: hidden; background: #050505;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.09), 0 50px 140px rgba(0,0,0,.85), 0 0 180px rgba(74,222,128,.10); }
+  .popframe { border: 0; width: 340px; height: 746px; transform: scale(1.5); transform-origin: 0 0; background: #050505; display: block; }
+
+  /* ---------- scene 3: article + counter ---------- */
+  #artCam { position: absolute; left: 0; top: 0; width: 1920px; height: 1200px; transform-origin: 0 0; }
+  #art { width: 1280px; height: 800px; border: 0; transform: scale(1.5); transform-origin: 0 0; display: block; }
+  #scrim3 { position: absolute; left: 0; top: 0; width: 1920px; height: 640px; pointer-events: none;
+    background: linear-gradient(180deg, rgba(9,9,9,.94) 0%, rgba(9,9,9,.82) 45%, rgba(9,9,9,0) 100%); }
+  #keys { position: absolute; left: 50%; top: 940px; margin-left: -300px; width: 600px; display: flex; gap: 22px; justify-content: center; opacity: 0; }
+  #keys kbd { min-width: 150px; padding: 26px 30px; text-align: center; border-radius: 22px; font: 500 46px 'Modern Dark Mono', monospace; color: #f2f2f2;
+    background: linear-gradient(#262626, #141414); border: 1px solid #3a3a3a; box-shadow: 0 12px 0 #000, 0 30px 60px rgba(0,0,0,.6); }
+  #keys kbd.down { background: linear-gradient(#5ee593, #34c070); color: #04140a; border-color: #2aa862; }
+
+  /* ---------- scene 4: themes ---------- */
+  .tri { position: absolute; top: 330px; width: 374px; height: 660px; border-radius: 20px; overflow: hidden; background: #050505;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.09), 0 40px 100px rgba(0,0,0,.8); }
+  .tri .popframe { transform: scale(1.1); height: 600px; }
+  .tlabel { position: absolute; top: 1020px; width: 374px; text-align: center; font: 500 26px 'Modern Dark Mono', monospace; letter-spacing: 3px; color: #e9e3d8; }
+
+  /* ---------- scene 5: end card ---------- */
+  #endIcon { position: absolute; left: 900px; top: 300px; width: 120px; height: 120px; border-radius: 28px; box-shadow: 0 30px 80px rgba(0,0,0,.7); }
+  #endName { position: absolute; left: 0; top: 440px; width: 1920px; text-align: center; font: 400 300px/1 'Anton', sans-serif; letter-spacing: 14px; color: #e9e3d8; padding-left: 14px; }
+  #endLine { position: absolute; left: 960px; top: 770px; height: 6px; width: 0; margin-left: 0; background: #d8b878; border-radius: 3px; }
+  #endTag { position: absolute; left: 0; top: 820px; width: 1920px; text-align: center; font: 400 36px 'Modern Dark Grotesk', sans-serif; letter-spacing: 1px; color: rgba(233,227,216,.78); }
+  #endSub { position: absolute; left: 0; top: 884px; width: 1920px; text-align: center; font: 400 24px 'Modern Dark Mono', monospace; letter-spacing: 4px; color: #d8b878; }
+
+  /* ---------- captions, cursor, overlays ---------- */
+  .cap { position: absolute; font-family: 'Anton', sans-serif; color: #e9e3d8; text-transform: uppercase; line-height: .98; letter-spacing: 3px; opacity: 0;
+    text-shadow: 0 6px 40px rgba(0,0,0,.6); white-space: pre; }
+  #cursor { position: absolute; left: 0; top: 0; width: 64px; height: 64px; opacity: 0; filter: drop-shadow(0 6px 10px rgba(0,0,0,.55)); }
+  .ripple { position: absolute; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 5px solid #d8b878; opacity: 0; }
+  #sample { position: absolute; right: 44px; bottom: 36px; font: 500 20px 'Modern Dark Mono', monospace; letter-spacing: 4px; color: rgba(233,227,216,.5); opacity: 0; }
+  #vig { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 50%, transparent 52%, rgba(0,0,0,.55) 100%); }
+</style></head>
+<body><div id="stage">
+
+  <div id="glowA" class="glow"></div><div id="glowB" class="glow"></div>
+
+  <!-- scene 1 -->
+  <div id="s1" class="scene"><div id="cam1">
+    <div id="win">
+      <div id="bar"><span class="dots"><i></i><i></i><i></i></span><div id="urlpill"></div><div id="tool"><b></b><b></b><img src="../icons/icon48.png" alt=""></div></div>
+      <div id="page">
+        <div id="phead"><div class="brand">&#9654; Videos</div><div class="search">Search</div><div class="av"></div></div>
+        <div id="pbody">
+          <nav id="side">
+            <ytd-guide-entry-renderer class="on"><a title="Home">Home</a></ytd-guide-entry-renderer>
+            <ytd-guide-entry-renderer><a title="Shorts">Shorts</a></ytd-guide-entry-renderer>
+            <ytd-guide-entry-renderer><a title="Subscriptions">Subscriptions</a></ytd-guide-entry-renderer>
+            <ytd-guide-entry-renderer><a title="Library">Library</a></ytd-guide-entry-renderer>
+            <ytd-guide-entry-renderer><a title="History">History</a></ytd-guide-entry-renderer>
+            <ytd-guide-entry-renderer><a title="Playlists">Playlists</a></ytd-guide-entry-renderer>
+          </nav>
+          <div id="main">
+            <div id="chips"><span class="on">All</span><span>Lectures</span><span>Coding</span><span>Math</span><span>Music</span><span>Science</span><span>Live</span></div>
+            <div id="grid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="sweep"></div>
+  </div><div id="scrim1" class="abs"></div></div>
+
+  <!-- scene 2 -->
+  <div id="s2" class="scene"><div id="popWrapOuter"><div id="pop"><iframe id="popf" class="popframe" data-src="../popup.html?theme=classic"></iframe></div></div></div>
+
+  <!-- scene 3 -->
+  <div id="s3" class="scene"><div id="artCam"><iframe id="art" data-src="ad-article.html?theme=light"></iframe></div><div id="scrim3"></div><div id="keys"><kbd>Alt</kbd><kbd>Shift</kbd><kbd>L</kbd></div></div>
+
+  <!-- scene 4 -->
+  <div id="s4" class="scene">
+    <div class="tri" id="t0"><iframe class="popframe" data-src="../popup.html?theme=classic"></iframe></div>
+    <div class="tri" id="t1"><iframe class="popframe" data-src="../popup.html?theme=light"></iframe></div>
+    <div class="tri" id="t2"><iframe class="popframe" data-src="../popup.html?theme=industrial"></iframe></div>
+    <div class="tlabel" id="tl0">CLASSIC DARK</div><div class="tlabel" id="tl1">CLASSIC LIGHT</div><div class="tlabel" id="tl2">INDUSTRIAL</div>
+  </div>
+
+  <!-- scene 5 -->
+  <div id="s5" class="scene">
+    <img id="endIcon" src="../icons/icon128.png" alt="">
+    <div id="endName">LOCKOUT</div><div id="endLine"></div>
+    <div id="endTag">Lock in. Skip the scroll.</div>
+    <div id="endSub">FREE &middot; NO ADS &middot; NO TRACKING</div>
+  </div>
+
+  <div id="badge"><img src="../icons/icon48.png" alt=""><span>SHORTS HIDDEN</span><i class="dot"></i></div>
+  <div id="sample">SAMPLE DATA</div>
+  <svg id="cursor" viewBox="0 0 24 24"><path d="M4 2l15 9-6.5 1.5L9 19z" fill="#fff" stroke="#0b0b0b" stroke-width="1.3" stroke-linejoin="round"/></svg>
+  <div id="vig"></div>
+</div>
+
+<script>
+/* =====================================================================
+   The whole ad is a pure function of time: render(t). The capture script
+   steps t in 1/30 s increments and screenshots each frame.
+   ===================================================================== */
+const T_TOTAL = 14.4;
+const LOOP1 = T_TOTAL - 1 / 30;   // last rendered frame: the blend is complete here
+const LOOP0 = 13.9;   // end card starts blending back into the hook frame
+const KEY = 'lockout_demo_state';
+const $ = (s) => document.querySelector(s);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const E = {
+  io: (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
+  out: (t) => 1 - Math.pow(1 - t, 3),
+  outQ: (t) => 1 - Math.pow(1 - t, 5),
+  in: (t) => t * t * t,
+  back: (t) => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); },
+  lin: (t) => t
+};
+const seg = (t, a, b, ease = E.io) => ease(clamp((t - a) / (b - a)));
+
+/* ---------- sample data (clearly staged) ---------- */
+const store = {
+  get() { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } },
+  set(p) { const s = store.get(); Object.assign(s, p); localStorage.setItem(KEY, JSON.stringify(s)); },
+  replace(o) { localStorage.setItem(KEY, JSON.stringify(o)); }
+};
+const dk = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+function seed() {
+  const focus = [58, 74, 45, 66, 91, 72, 38];
+  const daily = {};
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(); d.setHours(12); d.setDate(d.getDate() - (6 - i));
+    const today = i === 6;
+    daily[dk(d)] = { focusMs: focus[i] * 60000, sessions: 1, counted: today ? 0 : 1, blocked: 2 + (i % 3), dodged: i % 2, shorts: 6 + i * 2, reels: 4 + i,
+      wasted: (35 + i * 7) * 60000, wastedBy: { 'reddit.com': (20 + i * 3) * 60000 } };
+  }
+  daily[dk(new Date())] = { ...daily[dk(new Date())], focusMs: 38 * 60000, blocked: 4, dodged: 2, shorts: 12, reels: 9, wasted: 47 * 60000 };
+  store.replace({
+    theme: 'classic', blockTone: 'calm', trackTime: true, shortsCounter: true, overlayEnabled: false, overlayContent: 'both',
+    overlayScale: 1.7, overlayPos: { x: 0.7, y: 0.55 }, lastLevel: 'focused', lastDurationMin: 50, daily, bestStreak: 9,
+    lifetime: { focusMs: 41 * 3600000, counted: 58, blocked: 213, shorts: 412, reels: 297, dodged: 96, wasted: 14 * 3600000 }, sessionHistory: []
+  });
+}
+
+/* ---------- build scene 1 content ---------- */
+const THUMBS = [
+  ['#2b5876', '#4e4376', 'Linear Algebra, Lecture 4', 'MIT Open Lectures', '48:12'], ['#134e5e', '#71b280', 'How compilers actually work', 'Code Notes', '21:40'],
+  ['#614385', '#516395', 'Binary search in 10 minutes', 'DSA Daily', '10:03'], ['#355c7d', '#c06c84', 'Intro to graph theory', 'Math Lab', '33:27'],
+  ['#0f2027', '#2c5364', 'Organic chemistry: reactions', 'Chem Hub', '52:09'], ['#42275a', '#734b6d', 'Lo-fi beats to study to', 'Focus Radio', '1:02:00'],
+  ['#3a1c71', '#d76d77', 'Operating systems in one hour', 'CS Crash', '58:44'], ['#1d4350', '#a43931', 'Calculus: the big picture', 'Math Lab', '27:15'],
+  ['#4568dc', '#b06ab3', 'Dynamic programming, finally', 'DSA Daily', '36:50'], ['#232526', '#5a5d60', 'A day in the library', 'Study Vlog', '14:22'],
+  ['#0f9b8e', '#134e5e', 'Physics: waves and optics', 'Sci Hub', '41:18'], ['#8e2de2', '#4a00e0', 'How memory really works', 'Code Notes', '19:56']
+];
+const REELS = [['#ff7e5f', '#8e2de2', "You won't believe this"], ['#f7971e', '#c33764', 'Wait for the end'], ['#00c6ff', '#0072ff', 'Life hack time'],
+  ['#11998e', '#38ef7d', 'POV: it is 3am'], ['#fc5c7d', '#6a82fb', 'One more, I promise'], ['#f953c6', '#b91d73', 'Cat vs. cucumber']];
+(function buildGrid() {
+  const grid = $('#grid');
+  const item = (t, i) => `<ytd-rich-item-renderer><div class="thumb" style="background:linear-gradient(135deg,${t[0]},${t[1]})"><span class="dur">${t[4]}</span></div>
+    <div class="meta"><div class="ch" style="background:linear-gradient(135deg,${t[1]},${t[0]})"></div><div><div class="t">${t[2]}</div><div class="c">${t[3]}</div></div></div></ytd-rich-item-renderer>`;
+  let html = THUMBS.slice(0, 4).map(item).join('');
+  html += `<ytd-reel-shelf-renderer><h3><i></i>Shorts</h3><div class="reels">${REELS.map(r => `<div class="reel" style="background:linear-gradient(160deg,${r[0]},${r[1]})"><span>${r[2]}</span></div>`).join('')}</div></ytd-reel-shelf-renderer>`;
+  html += THUMBS.slice(4).map(item).join('');
+  grid.innerHTML = html;
+})();
+
+const cam1 = $('#cam1');
+const reels = [...document.querySelectorAll('.reel')];
+const flipItems = [...document.querySelectorAll('ytd-rich-item-renderer'), ...document.querySelectorAll('#side ytd-guide-entry-renderer')];
+const flip = { before: [], after: [] };
+let SHELF = { x: 960, y: 600 };
+function measureLayout() {
+  const root = document.documentElement;
+  const tops = () => flipItems.map(e => e.getBoundingClientRect().top);
+  root.classList.remove('lockout-hide-shorts');
+  flip.before = tops();
+  const sr = $('ytd-reel-shelf-renderer').getBoundingClientRect();
+  SHELF = { x: sr.left + sr.width / 2, y: sr.top + sr.height / 2 };
+  root.classList.add('lockout-hide-shorts');
+  flip.after = tops();
+  root.classList.remove('lockout-hide-shorts');
+}
+
+/* ---------- captions ---------- */
+const CAPS = [
+  { id: 'c0', text: 'SCROLLED\nAGAIN?', a: -9, b: 1.85, x: 110, y: 760, size: 210, fadeIn: 0.0, hook: true },
+  { id: 'c1', text: 'SHORTS.\nGONE.', a: 2.55, b: 4.05, x: 110, y: 640, size: 240 },
+  { id: 'c2', text: 'LOCK IN.', a: 4.4, b: 5.75, x: 120, y: 470, size: 250 },
+  { id: 'c3', text: 'EARN THE\nEXIT.', a: 5.95, b: 8.1, x: 120, y: 420, size: 235 },
+  { id: 'c4', text: 'COUNT EVERY\nSCROLL.', a: 8.5, b: 10.55, x: 110, y: 90, size: 190 },
+  { id: 'c5', text: 'THREE THEMES.', a: 10.6, b: 12.05, x: 0, y: 95, size: 150, center: true }
+];
+CAPS.forEach(c => {
+  const el = document.createElement('div'); el.className = 'cap'; el.id = c.id; el.textContent = c.text;
+  el.style.fontSize = c.size + 'px';
+  if (c.center) { el.style.left = '0'; el.style.width = '1920px'; el.style.textAlign = 'center'; } else el.style.left = c.x + 'px';
+  el.style.top = c.y + 'px';
+  $('#stage').appendChild(el);
+  c.el = el;
+});
+// Hook caption returns at the very end so the last frame equals the first
+CAPS.push({ id: 'c0b', loopHook: true, el: $('#c0') });
+
+function drawCaptions(t) {
+  for (const c of CAPS) {
+    if (c.loopHook) continue;
+    let alpha = 0, dy = 0;
+    if (c.hook) {
+      // fully visible from frame 0 (striking hook), leaves at 1.6-1.85, comes back for the loop blend
+      const out = seg(t, c.b - 0.25, c.b, E.io);
+      const back = seg(t, LOOP0, LOOP1, E.out);
+      alpha = Math.max(1 - out, back); dy = -out * 30 * (1 - back);
+    } else {
+      const inn = seg(t, c.a, c.a + 0.32, E.out), out = seg(t, c.b - 0.22, c.b, E.io);
+      alpha = inn * (1 - out); dy = (1 - inn) * 46 - out * 24;
+    }
+    c.el.style.opacity = alpha;
+    c.el.style.transform = `translateY(${dy}px)`;
+  }
+}
+
+/* ---------- scene visibility ---------- */
+function transition(t, inA, inB, outA, outB, dir = 1) {
+  const p = inA == null ? 1 : seg(t, inA, inB, E.out), q = outA == null ? 0 : seg(t, outA, outB, E.in);
+  return { op: p * (1 - q), dx: (1 - p) * 300 * dir - q * 300, blur: (1 - p) * 18 + q * 18 };
+}
+function applyScene(el, s) {
+  el.style.opacity = s.op;
+  el.style.transform = `translateX(${s.dx}px)`;
+  el.style.filter = s.blur > 0.3 ? `blur(${s.blur.toFixed(1)}px)` : 'none';
+}
+
+/* ---------- cursor + click ripples ---------- */
+const popf = $('#popf'), art = $('#art');
+function elCenter(frame, sel) {
+  const d = frame.contentDocument; const el = typeof sel === 'string' ? d.querySelector(sel) : sel;
+  if (!el) return null;
+  const r = el.getBoundingClientRect(), fr = frame.getBoundingClientRect(), k = fr.width / frame.offsetWidth;
+  return { x: fr.left + (r.left + r.width / 2) * k, y: fr.top + (r.top + r.height / 2) * k };
+}
+const CLICK_TIMES = [4.85, 5.5, 6.1];
+const PATH = [
+  { t: 4.30, pos: { x: 1840, y: 1130 } },
+  { t: 4.85, sel: '.chip[data-level="lockedin"]' },
+  { t: 5.50, sel: '#btn-start' },
+  { t: 6.10, sel: '#btn-end' },
+  { t: 6.95, pos: { x: 1480, y: 760 } }
+];
+const pathCache = [];
+function cursorAt(t) {
+  let pos = null;
+  for (let i = 0; i < PATH.length; i++) {
+    const w = PATH[i];
+    if (t >= w.t) { pathCache[i] = pathCache[i] || (w.pos || elCenter(popf, w.sel)); pos = pathCache[i]; }
+  }
+  for (let i = 1; i < PATH.length; i++) {
+    if (t >= PATH[i - 1].t && t < PATH[i].t && pathCache[i - 1]) {
+      const w = PATH[i], target = w.pos || elCenter(popf, w.sel) || pathCache[i - 1];
+      const k = seg(t, PATH[i - 1].t + 0.05, w.t - 0.05, E.io), a = pathCache[i - 1];
+      return { x: lerp(a.x, target.x, k), y: lerp(a.y, target.y, k) };
+    }
+  }
+  return pos;
+}
+function drawCursor(t) {
+  const cur = $('#cursor');
+  const vis = seg(t, 4.2, 4.5, E.out) * (1 - seg(t, 7.0, 7.4, E.in));
+  const p = cursorAt(t);
+  if (!p || vis <= 0) { cur.style.opacity = 0; } else {
+    const press = CLICK_TIMES.some(c => t >= c - 0.02 && t < c + 0.12) ? 0.86 : 1;
+    cur.style.opacity = vis;
+    cur.style.transform = `translate(${p.x - 8}px, ${p.y - 4}px) scale(${press})`;
+  }
+  CLICK_TIMES.forEach((c, i) => {
+    let r = document.getElementById('rip' + i);
+    if (!r) { r = document.createElement('div'); r.className = 'ripple'; r.id = 'rip' + i; $('#stage').appendChild(r); }
+    const k = clamp((t - c) / 0.55);
+    if (k <= 0 || k >= 1 || !pathCache[PATH.findIndex(w => w.t === c)]) { r.style.opacity = 0; return; }
+    const pc = pathCache[PATH.findIndex(w => w.t === c)];
+    r.style.left = pc.x + 'px'; r.style.top = pc.y + 'px';
+    r.style.opacity = (1 - k) * 0.95; r.style.transform = `scale(${lerp(.35, 1.5, E.out(k))})`;
+  });
+}
+
+/* ---------- timeline actions that drive the real UI (fire once, in order) ---------- */
+const fired = new Set();
+function once(name, t, at, fn) { if (t >= at && !fired.has(name)) { fired.add(name); fn(); } }
+const PLEDGE = 'I am choosing distraction over my goal';
+function drive(t) {
+  const pd = popf.contentDocument;
+  once('chip', t, 4.85, () => pd.querySelector('.chip[data-level="lockedin"]').click());
+  once('start', t, 5.50, () => pd.querySelector('#btn-start').click());
+  once('freeze', t, 5.95, () => { popf.contentWindow.setInterval = () => 0; });   // stop the gate's real-time countdown
+  once('end', t, 6.10, () => pd.querySelector('#btn-end').click());
+  if (t >= 6.5 && t <= 7.6) {
+    const n = Math.floor(seg(t, 6.5, 7.5, E.lin) * PLEDGE.length), inp = pd.querySelector('#gate-input');
+    if (inp && inp.value.length !== n) { inp.value = PLEDGE.slice(0, n); inp.dispatchEvent(new Event('input')); }
+  }
+  if (t >= 6.3 && t < 8.2) {
+    const c = pd.querySelector('#gate-countdown');
+    if (c) c.textContent = `You can end in ${Math.max(0, 60 - Math.floor(t - 6.3))}s`;
+  }
+  if (t >= 5.52 && t < 8.2 && popf.contentWindow.onTick) popf.contentWindow.onTick();
+  once('toggle', t, 9.05, () => art.contentWindow.__onMsg({ type: 'lockout:overlay-toggle' }, { id: 'demo' }, () => {}));
+  [9.55, 9.85, 10.1].forEach((at, i) => once('inc' + i, t, at, () => {
+    const s = store.get(), d = { ...s.daily }, k = dk(new Date());
+    d[k] = { ...d[k], reels: (d[k].reels || 0) + 1 }; store.set({ daily: d });
+  }));
+}
+
+/* ---------- render ---------- */
+function render(t) {
+  window.__adMs = window.__adBase + t * 1000;
+  const tl = t >= LOOP0 ? t - T_TOTAL : t;               // scene 1 local time (loop blend renders its t=0 state)
+  const t1 = Math.max(0, tl);
+
+  // background parallax
+  // cyclic drift, so the last frame lines up with the first (seamless loop)
+  const ph = (t / T_TOTAL) * Math.PI * 2;
+  $('#glowA').style.transform = `translate(${Math.sin(ph) * 110}px, ${Math.sin(ph * 2) * 34}px)`;
+  $('#glowB').style.transform = `translate(${-Math.sin(ph) * 100}px, ${(Math.cos(ph) - 1) * 34}px)`;
+
+  // scene 1: camera path
+  const wp = [[0, 960, 610, 1.05], [2.1, SHELF.x, SHELF.y, 1.52], [2.88, SHELF.x, SHELF.y + 14, 1.57], [4.0, 960, 650, 1.0]];
+  let cx, cy, z;
+  if (t1 <= 2.1) { const k = seg(t1, 0, 2.1, E.io); cx = lerp(wp[0][1], wp[1][1], k); cy = lerp(wp[0][2], wp[1][2], k); z = lerp(wp[0][3], wp[1][3], k); }
+  else if (t1 <= 2.88) { const k = seg(t1, 2.1, 2.88, E.lin); cx = lerp(wp[1][1], wp[2][1], k); cy = lerp(wp[1][2], wp[2][2], k); z = lerp(wp[1][3], wp[2][3], k); }
+  else { const k = seg(t1, 2.88, 4.0, E.io); cx = lerp(wp[2][1], wp[3][1], k); cy = lerp(wp[2][2], wp[3][2], k); z = lerp(wp[2][3], wp[3][3], k); }
+  cam1.style.transform = `translate(${960 - cx * z}px, ${600 - cy * z}px) scale(${z})`;
+
+  // shorts shelf: cards fly away, then the REAL extension CSS removes the shelf and the page reflows
+  const T_FLY = 2.30, T_CLASS = 2.88, T_FLIP = 3.7;
+  reels.forEach((r, i) => {
+    const p = seg(t1, T_FLY + i * 0.05, T_FLY + i * 0.05 + 0.5, E.in), m = i - 2.5;
+    r.style.transform = `translate(${m * 70 * p}px, ${-300 * p}px) rotate(${m * 8 * p}deg) scale(${1 - 0.22 * p})`;
+    r.style.opacity = 1 - p; r.style.filter = p > 0.02 ? `blur(${(p * 12).toFixed(1)}px)` : 'none';
+  });
+  const hidden = t1 >= T_CLASS;
+  document.documentElement.classList.toggle('lockout-hide-shorts', hidden);
+  flipItems.forEach((e, i) => {
+    const dy = flip.before[i] - flip.after[i];
+    e.style.transform = hidden ? `translateY(${(dy * (1 - seg(t1, T_CLASS, T_FLIP, E.outQ))).toFixed(1)}px)` : 'none';
+  });
+  const b = seg(t1, 2.5, 2.8, E.out) * (1 - seg(t1, 3.75, 4.0, E.in));
+  $('#badge').style.opacity = b; $('#badge').style.transform = `translateY(${(1 - b) * -40}px)`;
+  const sw = seg(t1, 2.86, 3.35, E.io);
+  $('#sweep').style.opacity = sw > 0 && sw < 1 ? 0.9 : 0; $('#sweep').style.left = lerp(-600, 2300, sw) + 'px';
+  $('#scrim1').style.opacity = 1 - seg(t1, 3.7, 4.0);
+
+  // scene opacities / whip transitions
+  const s1 = t >= LOOP0 ? { op: seg(t, LOOP0, LOOP1, E.out), dx: 0, blur: 0 } : transition(t, null, null, 4.0, 4.35);
+  applyScene($('#s1'), s1);
+  applyScene($('#s2'), transition(t, 4.0, 4.4, 8.05, 8.4));
+  applyScene($('#s3'), transition(t, 8.05, 8.45, 10.45, 10.8));
+  applyScene($('#s4'), transition(t, 10.45, 10.85, 12.0, 12.35));
+  const s5 = t >= LOOP0 ? { op: 1 - seg(t, LOOP0, LOOP1, E.out), dx: 0, blur: 0 } : transition(t, 12.0, 12.4, null, null);
+  applyScene($('#s5'), s5);
+  $('#scrim1').style.display = s1.op > 0.01 ? 'block' : 'none';
+
+  // scene 2: slow push-in on the real popup
+  $('#popWrapOuter').style.transform = `scale(${lerp(1, 1.07, seg(t, 4.0, 8.4, E.lin)).toFixed(4)})`;
+
+  // scene 3: push toward the floating counter
+  {
+    const k = seg(t, 8.45, 9.8, E.io), z3 = lerp(1.0, 1.55, k), px = lerp(960, 1150, k), py = lerp(600, 600, k);
+    $('#artCam').style.transform = `translate(${960 - px * z3}px, ${600 - py * z3}px) scale(${z3})`;
+    const press = seg(t, 8.55, 8.75, E.out), keyOp = seg(t, 8.45, 8.6, E.out) * (1 - seg(t, 9.1, 9.3, E.in));
+    $('#keys').style.opacity = keyOp; $('#keys').style.transform = `translateY(${(1 - seg(t, 8.45, 8.7, E.out)) * 60}px)`;
+    document.querySelectorAll('#keys kbd').forEach((kd, i) => kd.classList.toggle('down', t >= 8.6 + i * 0.1 && t < 9.2));
+  }
+
+  // scene 4: three themes glide in with parallax
+  [0, 1, 2].forEach(i => {
+    const p = seg(t, 10.5 + i * 0.1, 11.0 + i * 0.1, E.out), drift = lerp(0, -26 * (i - 1), seg(t, 10.8, 12.0, E.lin));
+    const left = 339 + i * (374 + 60);
+    const tri = $('#t' + i);
+    tri.style.left = left + 'px'; tri.style.transform = `translate(${drift}px, ${(1 - p) * 220 + Math.sin(t * 1.4 + i) * 6}px)`; tri.style.opacity = p;
+    const lb = $('#tl' + i); lb.style.left = left + 'px'; lb.style.opacity = seg(t, 10.9 + i * 0.1, 11.15 + i * 0.1, E.out); lb.style.transform = `translateX(${drift}px)`;
+  });
+
+  // scene 5: end card builds, then blends back to the hook
+  $('#endIcon').style.transform = `scale(${lerp(.4, 1, seg(t, 12.05, 12.45, E.back))})`; $('#endIcon').style.opacity = seg(t, 12.05, 12.3, E.out);
+  const nm = seg(t, 12.12, 12.55, E.outQ);
+  $('#endName').style.opacity = nm; $('#endName').style.transform = `translateY(${(1 - nm) * 80}px)`;
+  const lw = seg(t, 12.4, 12.8, E.io) * 440;
+  $('#endLine').style.width = lw + 'px'; $('#endLine').style.left = (960 - lw / 2) + 'px';
+  $('#endTag').style.opacity = seg(t, 12.6, 12.85, E.out); $('#endSub').style.opacity = seg(t, 12.7, 12.95, E.out);
+
+  // sample-data tag while real UI numbers are on screen
+  $('#sample').style.opacity = 0.9 * seg(t, 4.4, 4.7) * (1 - seg(t, 11.8, 12.1));
+
+  drawCaptions(t);
+  drive(t);
+  drawCursor(t);
+}
+
+/* ---------- iframe animation sync: every CSS animation/transition in the real UI follows ad time ---------- */
+function syncAnims(t) {
+  document.querySelectorAll('iframe').forEach(f => {
+    try {
+      for (const a of f.contentDocument.getAnimations()) {
+        if (a.__t0 === undefined) { a.__t0 = t; a.pause(); }
+        a.currentTime = Math.max(0, (t - a.__t0) * 1000);
+      }
+    } catch (e) { /* frame not ready */ }
+  });
+}
+
+/* ---------- boot ---------- */
+window.__adBase = Date.now();
+window.boot = async function () {
+  seed();
+  await document.fonts.ready;
+  const frames = [...document.querySelectorAll('iframe[data-src]')];
+  await Promise.all(frames.map(f => new Promise(r => { f.onload = r; f.src = f.dataset.src; })));
+  await new Promise(r => setTimeout(r, 1800));   // let the real UI finish its own load work
+  measureLayout();
+  return true;
+};
+window.renderAt = (t) => { render(t); syncAnims(t); };
+</script>
+</body></html>

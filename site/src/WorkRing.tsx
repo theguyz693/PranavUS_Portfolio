@@ -125,7 +125,14 @@ export default function WorkRing({ pos, onOpen }: { pos: MotionValue<number>; on
         v.src = clip; v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto'; v.crossOrigin = 'anonymous'
         const tex = new THREE.VideoTexture(v)
         tex.colorSpace = THREE.SRGBColorSpace
-        v.addEventListener('loadeddata', () => { cover(tex, v.videoWidth, v.videoHeight, scale); mat.map = tex; mat.needsUpdate = true })
+        // projects with a hype video skip the placeholder: dark until the first frame, then the video plays straight away
+        panel.fade = 0
+        veilMesh.visible = false
+        const dark = new THREE.DataTexture(new Uint8Array([10, 10, 11, 255]), 1, 1)
+        dark.colorSpace = THREE.SRGBColorSpace
+        dark.needsUpdate = true
+        mat.map = dark; mat.needsUpdate = true
+        v.addEventListener('loadeddata', () => { cover(tex, v.videoWidth, v.videoHeight, scale); mat.map = tex; mat.needsUpdate = true; dark.dispose() })
         v.addEventListener('playing', () => { panel.ready = true })
         panel.video = v
         v.load()

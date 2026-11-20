@@ -1,0 +1,15 @@
+{
+  "name": "collectorhub-ad-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node ad-capture.mjs ad-frames",
+    "encode": "node ad-encode.mjs ad-frames ad-final 318",
+    "build": "npm run capture && npm run encode"
+  },
+  "dependencies": {
+    "mp4-muxer": "^5.2.2",
+    "playwright-core": "1.65.1",
+    "webm-muxer": "^5.1.4"
+  }
+}

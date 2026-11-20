@@ -1,0 +1,2 @@
+{ "name": "vibeflow-hype-video", "private": true, "type": "module",
+  "dependencies": { "playwright-core": "1.56.1", "@fontsource/anton": "^5.0.0" } }

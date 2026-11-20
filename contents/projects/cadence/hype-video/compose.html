@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cadence hype compositor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Host+Grotesk:wght@500;600&display=block" rel="stylesheet">
+<style>
+  html, body { margin: 0; width: 1920px; height: 1200px; overflow: hidden; background: #090909; }
+  #stage { position: relative; width: 1920px; height: 1200px; overflow: hidden; background: #090909; perspective: 2400px; }
+  #glow { position: absolute; left: -10%; top: -10%; width: 120%; height: 120%; filter: blur(90px) saturate(1.3); opacity: 0.32; }
+  #card { position: absolute; left: 0; top: 0; width: 1920px; height: 1200px; transform-origin: 0 0; border-radius: 22px; overflow: hidden;
+    box-shadow: 0 60px 140px -40px rgba(0,0,0,.85), 0 0 0 1px rgba(233,227,216,.06); will-change: transform, filter; }
+  #card canvas, #glow canvas { display: block; width: 100%; height: 100%; }
+  #dim { position: absolute; inset: 0; background: #090909; pointer-events: none; }
+  #vignette { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 75% 70% at 50% 48%, transparent 55%, rgba(9,9,9,.55) 80%, rgba(9,9,9,.92) 100%); }
+  .cap { position: absolute; font-family: 'Anton', Impact, sans-serif; color: #e9e3d8; text-transform: uppercase; letter-spacing: 0.01em;
+    line-height: 0.92; white-space: nowrap; will-change: transform, opacity; }
+  .cap.plate { left: 96px; bottom: 92px; font-size: 128px; padding: 22px 34px 18px; background: #090909; border-radius: 6px; }
+  .cap.plate i { position: absolute; left: 34px; bottom: 0; height: 6px; width: 0; background: #d8b878; }
+  #hook { left: 50%; top: 50%; font-size: 236px; transform: translate(-50%, -50%); text-align: center; text-shadow: 0 20px 80px rgba(0,0,0,.6); }
+  #end { position: absolute; inset: 0; display: grid; place-items: center; background: #090909; }
+  #end .name { font-family: 'Anton', Impact, sans-serif; font-size: 300px; color: #e9e3d8; letter-spacing: 0.02em; line-height: 0.9; text-align: center; }
+  #end .line { width: 0; height: 8px; margin: 34px auto 0; background: #d8b878; }
+  #end .sub { margin-top: 30px; font: 500 40px/1.2 'Host Grotesk', system-ui, sans-serif; color: rgba(233,227,216,.72); text-align: center; letter-spacing: -0.01em; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <filter id="mblur" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur id="mblurStd" stdDeviation="0 0" /></filter>
+</svg>
+<div id="stage">
+  <div id="glow"><canvas id="glowCanvas" width="480" height="300"></canvas></div>
+  <div id="card"><canvas id="cardCanvas" width="1920" height="1200"></canvas></div>
+  <div id="vignette"></div>
+  <div id="hook" class="cap">Keep a<br>rhythm.</div>
+  <div id="cap1" class="cap plate">One tap.<i></i></div>
+  <div id="cap2" class="cap plate">Just type it.<i></i></div>
+  <div id="cap3" class="cap plate">Nine themes.<i></i></div>
+  <div id="cap4" class="cap plate">Lock in.<i></i></div>
+  <div id="end"><div><div class="name">Cadence</div><div class="line"></div><div class="sub">Routines on your own cycle.</div></div></div>
+  <div id="dim"></div>
+</div>
+<script>
+const W = 1920, H = 1200;
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+
+let M, imgs = {};
+async function load() {
+  M = await (await fetch('assets/manifest.json')).json();
+  const files = new Set(Object.values(M.stills));
+  Object.values(M.sequences).forEach(s => s.frames.forEach(f => files.add(f.file)));
+  await Promise.all([...files].map(f => new Promise((res, rej) => {
+    const im = new Image(); im.onload = () => im.decode().then(res, res); im.onerror = rej; im.src = 'assets/' + f; imgs[f] = im;
+  })));
+  await document.fonts.ready;
+  await Promise.all([document.fonts.load('236px Anton'), document.fonts.load('500 40px "Host Grotesk"')]);
+  return true;
+}
+function seqFrame(name, local) {
+  const s = M.sequences[name];
+  let pick = s.frames[0];
+  for (const f of s.frames) { if (f.t <= local) pick = f; else break; }
+  return imgs[pick.file];
+}
+
+// Shots: [start, end, image(t), focus from → to (image px), scale from → to, tilt from → to]
+const F = () => M.focus;
+function shots() {
+  const fz = F();
+  const up = { x: fz.upnext.x + fz.upnext.w / 2, y: (fz.summary.y + fz.upnext.y + fz.upnext.h) / 2 };
+  const field = { x: fz.typeField.x + fz.typeField.w * 0.5, y: fz.typeField.y + 34 };
+  const timer = { x: fz.timer.x + fz.timer.w / 2, y: fz.timer.y + fz.timer.h / 2 };
+  const content = { x: 1084, y: 470 };
+  const themes = ['theme-cyberpunk', 'theme-clay', 'theme-retro', 'theme-sketch', 'theme-industrial', 'theme-organic'];
+  const list = [
+    // hook + hero: one continuous push onto the Up next card while "Mark done" is clicked
+    { a: 0.0, b: 4.25, img: t => seqFrame('tick', Math.max(0, t - 1.1)), f0: { x: up.x - 40, y: up.y - 20 }, f1: { x: up.x + 230, y: up.y + 10 }, s0: 1.45, s1: 2.15, r0: [7, -10], r1: [0, -2] },
+    // quick add, close on the field as the parse fills in
+    { a: 4.25, b: 6.85, img: t => seqFrame('type', t - 4.25 + 0.05), f0: { x: field.x - 90, y: field.y + 4 }, f1: { x: field.x - 10, y: field.y + 10 }, s0: 2.45, s1: 2.75, r0: [-4, 6], r1: [0, 2] },
+  ];
+  themes.forEach((th, i) => {
+    const a = 6.85 + i * 0.4, b = a + 0.4;
+    list.push({ a, b, img: () => imgs[M.stills[th]], f0: { x: content.x - 20, y: content.y - 60 }, f1: { x: content.x + 20, y: content.y - 70 }, s0: 1.42, s1: 1.5, r0: [i % 2 ? 3 : -3, i % 2 ? -5 : 5], r1: [0, 0] });
+  });
+  list.push({ a: 9.25, b: 10.75, img: t => seqFrame('lockin', t - 9.25), f0: { x: timer.x, y: timer.y + 10 }, f1: { x: timer.x, y: timer.y }, s0: 1.35, s1: 1.62, r0: [5, 8], r1: [0, 1] });
+  return list;
+}
+let SHOTS;
+
+function capAnim(el, t, a, b) {
+  const inn = easeOut(seg(t, a, a + 0.28)), out = seg(t, b - 0.2, b);
+  const vis = t >= a && t <= b;
+  el.style.opacity = vis ? (inn * (1 - out)).toFixed(3) : 0;
+  el.style.transform = `translateY(${lerp(46, 0, inn) - out * 20}px)`;
+  const line = el.querySelector('i');
+  if (line) line.style.width = `${easeInOut(seg(t, a + 0.12, a + 0.55)) * 140}px`;
+}
+
+window.renderAt = function (t) {
+  const card = document.getElementById('card');
+  const ctx = document.getElementById('cardCanvas').getContext('2d');
+  const gctx = document.getElementById('glowCanvas').getContext('2d');
+  const shot = SHOTS.find(s => t >= s.a && t < s.b) || SHOTS[SHOTS.length - 1];
+  const p = easeInOut(seg(t, shot.a, shot.b));
+  const im = shot.img(t);
+  ctx.drawImage(im, 0, 0, W, H);
+  gctx.drawImage(im, 0, 0, 480, 300);
+
+  const s = lerp(shot.s0, shot.s1, p);
+  const fx = lerp(shot.f0.x, shot.f1.x, p), fy = lerp(shot.f0.y, shot.f1.y, p);
+  const rx = lerp(shot.r0[0], shot.r1[0], p), ry = lerp(shot.r0[1], shot.r1[1], p);
+  // whip between shots: horizontal motion blur + a small slide, centred on each cut
+  let whip = 0, dir = 1;
+  const WHIP = 0.05;
+  for (const c of SHOTS.slice(1)) { const d = t - c.a; if (Math.abs(d) < WHIP) { whip = 1 - Math.abs(d) / WHIP; dir = d < 0 ? -1 : 1; } }
+  // The focus point is the transform origin, so moving it to the frame centre is a plain translate.
+  const tx = W / 2 - fx + whip * 60 * dir, ty = H / 2 - fy;
+  card.style.transformOrigin = `${fx}px ${fy}px`;
+  card.style.transform = `translate(${tx}px, ${ty}px) rotateX(${rx}deg) rotateY(${ry}deg) scale(${s})`;
+  document.getElementById('mblurStd').setAttribute('stdDeviation', `${(whip * 18).toFixed(2)} 0`);
+  card.style.filter = whip > 0.02 ? 'url(#mblur)' : 'none';
+  // parallax: the glow drifts opposite the camera, at a fraction of its motion
+  document.getElementById('glow').style.transform = `translate(${(fx - W / 2) * -0.08 + whip * 20 * dir}px, ${(fy - H / 2) * -0.08}px) scale(1.15)`;
+
+  // hook: big words over the dimmed screen, then the screen brightens
+  const hook = document.getElementById('hook');
+  const hIn = easeOut(seg(t, 0.12, 0.5)), hOut = seg(t, 1.0, 1.3);
+  hook.style.opacity = (hIn * (1 - hOut)).toFixed(3);
+  hook.style.transform = `translate(-50%, -50%) scale(${lerp(1.08, 1, hIn) + hOut * 0.06})`;
+  const darken = t < 1.3 ? lerp(0.55, 0, seg(t, 0.9, 1.3)) : 0;
+
+  capAnim(document.getElementById('cap1'), t, 2.15, 4.15);
+  capAnim(document.getElementById('cap2'), t, 4.45, 6.8);
+  capAnim(document.getElementById('cap3'), t, 6.95, 9.2);
+  capAnim(document.getElementById('cap4'), t, 9.4, 10.7);
+
+  // end card in, then everything to near-black so the last frame meets the first
+  const end = document.getElementById('end');
+  const eIn = easeInOut(seg(t, 10.6, 11.0));
+  end.style.opacity = eIn.toFixed(3);
+  end.querySelector('.name').style.transform = `scale(${lerp(1.12, 1, easeOut(seg(t, 10.6, 11.5)))})`;
+  end.querySelector('.line').style.width = `${easeInOut(seg(t, 10.85, 11.35)) * 220}px`;
+  end.querySelector('.sub').style.opacity = easeOut(seg(t, 11.0, 11.3)).toFixed(3);
+  const fadeIn = 1 - easeOut(seg(t, 0, 0.35));
+  const fadeOut = easeInOut(seg(t, 11.65, 12.0));
+  document.getElementById('dim').style.opacity = Math.max(fadeIn, fadeOut, darken).toFixed(3);
+};
+window.ready = load().then(() => { SHOTS = shots(); return true; });
+</script>
+</body>
+</html>
