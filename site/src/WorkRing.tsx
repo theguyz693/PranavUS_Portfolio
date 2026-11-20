@@ -4,8 +4,8 @@ import type { MotionValue } from 'framer-motion'
 import { projects, type Project } from './content'
 
 const R = 10          // ring radius; the camera sits in the middle
-const H = 3.1         // card height
-const ARC = 0.66      // card width as an angle (radians)
+const H = 3.75        // card height
+const ARC = 0.60      // card width as an angle (radians)
 const GAP = 0.08
 const STEP = ARC + GAP
 
@@ -98,7 +98,7 @@ export default function WorkRing({ pos, onOpen }: { pos: MotionValue<number>; on
     el.appendChild(renderer.domElement)
     renderer.domElement.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block'
     const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50)
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 50)
     camera.position.set(0, 0, 0)
     camera.lookAt(0, 0, -1)
     const loader = new THREE.TextureLoader()
@@ -153,7 +153,7 @@ export default function WorkRing({ pos, onOpen }: { pos: MotionValue<number>; on
       renderer.setSize(w, h, false)
       camera.aspect = w / h
       // on tall/narrow screens widen the field of view so the centre card still fits
-      camera.fov = w / h < 1 ? 38 / Math.max(0.55, w / h) : 38
+      camera.fov = w / h < 1 ? 42 / Math.max(0.55, w / h) : 42
       camera.updateProjectionMatrix()
     }
     resize()
